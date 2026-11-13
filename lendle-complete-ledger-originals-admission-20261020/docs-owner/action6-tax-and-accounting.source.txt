@@ -1,0 +1,133 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.etherscan.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Tax and Accounting
+
+> Build tax, accounting, and reporting workflows with transaction history, transfers, historical balances, and address metadata.
+
+A tax or accounting record is built from a few core data sources: the full movement of funds, token transfers, point-in-time balances, and readable address labels. This guide shows the endpoints behind each piece.
+
+New to the API? Start with [Make your first call](/make-your-first-call). Chain availability and endpoint access depend on your [API plan](https://etherscan.io/api/pricing).
+
+<Tip>
+  Every endpoint in this guide works on all 60+ supported chains, just switch the `chainid`. For example, set `chainid=42161` to read the same address on Arbitrum. See [Supported chains](/supported-chains) for the full list.
+</Tip>
+
+## Transaction history
+
+Reconstruct the complete movement of funds in and out of an address, in chronological order.
+
+<Steps>
+  <Step title="Get normal transactions">
+    The transactions the address signed: native sends, receives, and contract calls. Sort ascending (`sort=asc`) to build the ledger from the first transaction forward.
+
+    ```bash theme={null}
+    curl --request GET \
+      --url 'https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlist&address=0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045&page=1&offset=25&sort=asc&apikey=YourApiKey'
+    ```
+
+    <Tip>
+      Sync incrementally. For ongoing tracking, store the latest processed block and request only newer activity after the initial import.
+    </Tip>
+  </Step>
+
+  <Step title="Get internal transactions">
+    Value transfers triggered during contract execution, such as native coin received from a protocol withdrawal. These are separate from normal transactions, so include them for a complete record.
+
+    ```bash theme={null}
+    curl --request GET \
+      --url 'https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlistinternal&address=0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045&page=1&offset=25&sort=asc&apikey=YourApiKey'
+    ```
+  </Step>
+
+  <Step title="Get token transfers">
+    ERC-20 token transfers in and out of the address, to include token activity in the record.
+
+    ```bash theme={null}
+    curl --request GET \
+      --url 'https://api.etherscan.io/v2/api?chainid=1&module=account&action=tokentx&address=0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045&page=1&offset=25&sort=asc&apikey=YourApiKey'
+    ```
+  </Step>
+</Steps>
+
+## Historical balances
+
+Snapshot holdings at a specific point in time for period-end reporting.
+
+<Steps>
+  <Step title="Convert a date to a block">
+    Map a reporting date to the closest block before that timestamp. Use the returned block number in the balance calls below.
+
+    ```bash theme={null}
+    curl --request GET \
+      --url 'https://api.etherscan.io/v2/api?chainid=1&module=block&action=getblocknobytime&timestamp=1735689600&closest=before&apikey=YourApiKey'
+    ```
+  </Step>
+
+  <Step title="Get the native balance at that block">
+    The native coin balance of an address at the selected block. The value is returned in wei, so divide by 10^18 for display. This is a PRO endpoint, available to the [Standard plan](/rate-limits) and above.
+
+    ```bash theme={null}
+    curl --request GET \
+      --url 'https://api.etherscan.io/v2/api?chainid=1&module=account&action=balancehistory&address=0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045&blockno=21525890&apikey=YourApiKey'
+    ```
+  </Step>
+</Steps>
+
+## Token balances
+
+Combine current and historical token holdings for portfolio reconciliation.
+
+<Steps>
+  <Step title="Get current ERC-20 holdings">
+    The ERC-20 tokens currently held by an address, for reconciling against your ledger. This is a PRO endpoint, available to the [Standard plan](/rate-limits) and above.
+
+    ```bash theme={null}
+    curl --request GET \
+      --url 'https://api.etherscan.io/v2/api?chainid=1&module=account&action=addresstokenbalance&address=0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045&page=1&offset=100&apikey=YourApiKey'
+    ```
+
+    <Tip>
+      Normalize token amounts. Token values are returned in their smallest unit. Use each token's `tokenDecimal` value to convert amounts before calculations.
+    </Tip>
+  </Step>
+
+  <Step title="Get historical ERC-20 balances">
+    The balance of a specific token at a given block, for period reporting. This is a PRO endpoint, available to the [Standard plan](/rate-limits) and above.
+
+    ```bash theme={null}
+    curl --request GET \
+      --url 'https://api.etherscan.io/v2/api?chainid=1&module=account&action=tokenbalancehistory&address=0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045&contractaddress=0xdAC17F958D2ee523a2206206994597C13D831ec7&blockno=21525890&apikey=YourApiKey'
+    ```
+  </Step>
+</Steps>
+
+## Address labels
+
+Attach names and labels to addresses so reports and audit trails read clearly.
+
+<Steps>
+  <Step title="Look up an address name tag and labels">
+    Returns the same name tag and labels shown on etherscan.io, part of [Etherscan Metadata](/metadata/introduction). Use it to attribute counterparties in a transaction ledger. This is a PRO+ endpoint, available on the Pro Plus plan.
+
+    ```bash theme={null}
+    curl --request GET \
+      --url 'https://api.etherscan.io/v2/api?chainid=1&module=nametag&action=getaddresstag&address=0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045&apikey=YourApiKey'
+    ```
+  </Step>
+</Steps>
+
+## Putting it together
+
+Combine these endpoints to build common tax and accounting workflows:
+
+* **Transaction ledger:** `txlist` + `txlistinternal` + `tokentx`
+* **Portfolio reconciliation:** `addresstokenbalance` + `balancehistory` + `tokenbalancehistory`
+* **Cost-basis calculations:** ordered transfers with timestamps, values, and token decimals
+* **Entity attribution:** `getaddresstag`
+
+For multi-chain entities, repeat the same workflow for each `chainid` and combine the results into a unified view.
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

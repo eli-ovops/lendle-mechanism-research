@@ -1,0 +1,131 @@
+bridges-server/CLAUDE.md at master · DefiLlama/bridges-server · GitHub (https://github.com/DefiLlama/bridges-server/blob/master/CLAUDE.md)
+citeturn1223search1 [wordlim: 200] Crawled: 2 months ago; Aggregate: Raw txs are priced via DefiLlama's price API (`coins.llama.fi`), then rolled up into hourly and daily volume tables ...   * `aggregate.ts` — fetches prices from `coins.llama.fi`, computes USD volumes, inserts aggregated rows
+
+# CLAUDE.md
+
+Copy path
+
+[Input: Go to file]
+
+Blame More file actions
+
+Blame More file actions
+
+## Latest commit
+
+ 
+
+## History
+
+History
+
+master
+
+## Breadcrumbs
+
+  1. bridges-server
+
+/
+
+# CLAUDE.md
+
+Copy path
+
+Top
+
+## File metadata and controls
+
+  * Preview
+
+  * Code
+
+  * Blame
+
+178 lines (127 loc) · 11 KB
+
+Raw
+
+Copy raw file
+
+Download raw file
+
+Outline
+
+Edit and raw actions
+
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+DefiLlama Bridges Server — aggregates cross-chain bridge transaction data from 100+ protocols. Fetches on-chain events via adapters, stores in PostgreSQL, aggregates into hourly/daily volumes, and exposes a REST API via Fastify.
+
+## Commands
+
+  * Type check: `npm run ts` (runs `tsc --noEmit`)
+  * Build: `npm run build` (Vite → `dist/`, CJS output)
+  * Dev server: `npm run dev` (requires `.env` file; tsx watch on port 3000)
+  * Production server: `npm run start` (runs `dist/index.js`)
+  * Cron worker: `npm run start:cron` (runs `dist/startCron.js`)
+  * Test adapter: `npm run test <bridgeName> [numBlocks]` — runs adapter against recent blocks
+  * Test historical: `npm run test-txs <startTs> <endTs> <adapter>` — backfill test
+  * Backfill adapter: `npm run adapter <startTs> <endTs> <bridgeName> [chain]` (requires `.env`)
+  * Aggregate: `npm run aggregate <startTs> <endTs> <bridgeName>` (requires `.env`)
+  * Formatting: Prettier with `printWidth: 120`, `tabWidth: 2`
+
+## Architecture
+
+### Data Pipeline Overview
+
+The system follows a three-stage pipeline: Fetch → Store → Aggregate.
+
+  1. Fetch: Adapters pull raw bridge transaction events from on-chain logs or APIs
+  2. Store: Raw transactions are inserted into `bridges.transactions` with block timestamps
+  3. Aggregate: Raw txs are priced via DefiLlama's price API (`coins.llama.fi`), then rolled up into hourly and daily volume tables
+
+### Aggregation Pipeline (`src/utils/aggregate.ts`)
+
+`aggregateData(timestamp, bridgeDbName, chain, hourly, largeTxThreshold)`:
+
+  1. Determines the time window (previous hour or previous day relative to `timestamp`)
+  2. Queries all raw transactions from `bridges.transactions` for that bridge/chain/time window
+  3. Collects unique token addresses and fetches batch prices from `coins.llama.fi` via `getLlamaPrices()`
+  4. For each transaction:
+     * Converts raw token amount to USD using price + decimals (respects `transformTokens` and `transformTokenDecimals` mappings)
+     * If `is_usd_volume` flag is set, uses amount directly as USD value
+     * Accumulates per-token and per-address deposit/withdrawal totals
+     * Flags transactions above `largeTxThreshold` for separate storage
+     * Skips values over $10B as likely errors
+  5. Inserts aggregated row into `bridges.hourly_aggregated` or `bridges.daily_aggregated`
+  6. Inserts qualifying rows into `bridges.large_transactions`
+
+`aggregateHourlyVolume` / `aggregateDailyVolume` (`src/server/jobs/`): Secondary aggregation that copies data from `hourly_aggregated` into simplified `hourly_volume`/`daily_volume` tables joined with chain info from `bridges.config`.
+### Database (`sql/data.sql`)
+
+PostgreSQL under `bridges` schema. Key tables:
+
+  * `bridges.transactions` — raw tx records (unique on bridge_id, chain, tx_hash, token, tx_from, tx_to)
+  * `bridges.hourly_aggregated` / `bridges.daily_aggregated` — pre-aggregated volumes with token_total[] and address_total[] arrays
+  * `bridges.hourly_volume` / `bridges.daily_volume` — simplified volume tables (joined with chain from config)
+  * `bridges.large_transactions` — transactions above `largeTxThreshold`
+  * `bridges.config` — maps (bridge_name, chain) → UUID
+
+DB access via `src/utils/db.js` using the `postgres` npm package. Two connection pools: `sql` (max 10) for writes, `querySql` (max 6) for reads.
+
+### Server (`src/server/`)
+
+  * `index.ts` — Fastify server with Redis caching (70-min TTL, 10-min warming interval)
+  * `cron.ts` — Delay-based job scheduler (see Cron System above)
+  * Handlers in `src/handlers/` use `wrap()` from `src/utils/wrap.ts` for Lambda/Fastify compatibility
+
+### Utilities (`src/utils/`)
+
+  * `adapter.ts` — adapter runner: `runAdapterToCurrentBlock()`, `runAdapterHistorical()`, `runAllAdaptersToCurrentBlock()`; defines `bridgesToSkip`
+  * `aggregate.ts` — fetches prices from `coins.llama.fi`, computes USD volumes, inserts aggregated rows
+  * `blocks.ts` — `getLatestBlockNumber()`, `getBlockByTimestamp()` (multi-chain: EVM, Solana, Sui, Stellar, Tron, IBC)
+  * `prices.ts` — DefiLlama price API integration
+  * `cache.ts` — Redis wrapper with getLogs tracking per adapter:chain
+  * `constants.ts` — `maxBlocksToQueryByChain` per-chain block query limits (~1.5-2 hours of blocks)
+
+--------------------------------------------------------------------------------

@@ -1,0 +1,535 @@
+dimension-adapters/fees/flying-tulip-ftusd.ts at master · DefiLlama/dimension-adapters · GitHub (https://github.com/DefiLlama/dimension-adapters/blob/master/fees/flying-tulip-ftusd.ts)
+citeturn1223search0 [wordlim: 200] Crawled: last month; // Flying Tulip ftUSD — yield-bearing stablecoin. ... // ftUSD is not yet priced on coins.llama.fi.
+
+# flying-tulip-ftusd.ts
+
+
+# flying-tulip-ftusd.ts
+
+Copy path
+
+Top
+
+105 lines (93 loc) · 4.44 KB
+
+Raw
+
+Copy raw file
+
+Download raw file
+
+
+import { CHAIN } from '../helpers/chains'
+
+import { FetchOptions, SimpleAdapter } from '../adapters/types'
+
+// Flying Tulip ftUSD — yield-bearing stablecoin. The MintAndRedeem engine
+
+// charges a per-collateral fee on every mint and redeem (configured via
+
+// mintFeeBps / redeemFeeBps). Fees are denominated in ftUSD itself, accumulate
+
+// in the engine's claimableFeeAmount, and the owner periodically calls
+
+// sweepFees(to, amount) to send them to the Flying Tulip treasury at
+
+// 0x1118e1c057211306a40A4d7006C040dbfE1370Cb.
+
+//
+
+// All collected fees flow to the protocol treasury, so dailyFees ==
+
+// dailyRevenue == dailyProtocolRevenue. There is no supplier or holder cut on
+
+// this stream.
+
+// ftUSD is not yet priced on coins.llama.fi. The fees are denominated in ftUSD
+
+// (6 decimals, dollar pegged), so we attribute the raw amount to a $1 stablecoin
+
+// on the same chain and let the price engine convert it to USD. --------------------------------------------------------------------------------
+bridges-server/CLAUDE.md at master · DefiLlama/bridges-server · GitHub (https://github.com/DefiLlama/bridges-server/blob/master/CLAUDE.md)
+citeturn1223search1 [wordlim: 200] Crawled: 2 months ago; Aggregate: Raw txs are priced via DefiLlama's price API (`coins.llama.fi`), then rolled up into hourly and daily volume tables ...   * `aggregate.ts` — fetches prices from `coins.llama.fi`, computes USD volumes, inserts aggregated rows
+
+# CLAUDE.md
+
+Copy path
+
+[Input: Go to file]
+
+Blame More file actions
+
+Blame More file actions
+
+## Latest commit
+
+ 
+
+## History
+
+History
+
+master
+
+## Breadcrumbs
+
+  1. bridges-server
+
+/
+
+# CLAUDE.md
+
+Copy path
+
+Top
+
+## File metadata and controls
+
+  * Preview
+
+  * Code
+
+  * Blame
+
+178 lines (127 loc) · 11 KB
+
+Raw
+
+Copy raw file
+
+Download raw file
+
+Outline
+
+Edit and raw actions
+
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+DefiLlama Bridges Server — aggregates cross-chain bridge transaction data from 100+ protocols. Fetches on-chain events via adapters, stores in PostgreSQL, aggregates into hourly/daily volumes, and exposes a REST API via Fastify.
+
+## Commands
+
+  * Type check: `npm run ts` (runs `tsc --noEmit`)
+  * Build: `npm run build` (Vite → `dist/`, CJS output)
+  * Dev server: `npm run dev` (requires `.env` file; tsx watch on port 3000)
+  * Production server: `npm run start` (runs `dist/index.js`)
+  * Cron worker: `npm run start:cron` (runs `dist/startCron.js`)
+  * Test adapter: `npm run test <bridgeName> [numBlocks]` — runs adapter against recent blocks
+  * Test historical: `npm run test-txs <startTs> <endTs> <adapter>` — backfill test
+  * Backfill adapter: `npm run adapter <startTs> <endTs> <bridgeName> [chain]` (requires `.env`)
+  * Aggregate: `npm run aggregate <startTs> <endTs> <bridgeName>` (requires `.env`)
+  * Formatting: Prettier with `printWidth: 120`, `tabWidth: 2`
+
+## Architecture
+
+### Data Pipeline Overview
+
+The system follows a three-stage pipeline: Fetch → Store → Aggregate.
+
+  1. Fetch: Adapters pull raw bridge transaction events from on-chain logs or APIs
+  2. Store: Raw transactions are inserted into `bridges.transactions` with block timestamps
+  3. Aggregate: Raw txs are priced via DefiLlama's price API (`coins.llama.fi`), then rolled up into hourly and daily volume tables
+
+### Aggregation Pipeline (`src/utils/aggregate.ts`)
+
+`aggregateData(timestamp, bridgeDbName, chain, hourly, largeTxThreshold)`:
+
+  1. Determines the time window (previous hour or previous day relative to `timestamp`)
+  2. Queries all raw transactions from `bridges.transactions` for that bridge/chain/time window
+  3. Collects unique token addresses and fetches batch prices from `coins.llama.fi` via `getLlamaPrices()`
+  4. For each transaction:
+     * Converts raw token amount to USD using price + decimals (respects `transformTokens` and `transformTokenDecimals` mappings)
+     * If `is_usd_volume` flag is set, uses amount directly as USD value
+     * Accumulates per-token and per-address deposit/withdrawal totals
+     * Flags transactions above `largeTxThreshold` for separate storage
+     * Skips values over $10B as likely errors
+  5. Inserts aggregated row into `bridges.hourly_aggregated` or `bridges.daily_aggregated`
+  6. Inserts qualifying rows into `bridges.large_transactions`
+
+`aggregateHourlyVolume` / `aggregateDailyVolume` (`src/server/jobs/`): Secondary aggregation that copies data from `hourly_aggregated` into simplified `hourly_volume`/`daily_volume` tables joined with chain info from `bridges.config`.
+### Database (`sql/data.sql`)
+
+PostgreSQL under `bridges` schema. Key tables:
+
+  * `bridges.transactions` — raw tx records (unique on bridge_id, chain, tx_hash, token, tx_from, tx_to)
+  * `bridges.hourly_aggregated` / `bridges.daily_aggregated` — pre-aggregated volumes with token_total[] and address_total[] arrays
+  * `bridges.hourly_volume` / `bridges.daily_volume` — simplified volume tables (joined with chain from config)
+  * `bridges.large_transactions` — transactions above `largeTxThreshold`
+  * `bridges.config` — maps (bridge_name, chain) → UUID
+
+DB access via `src/utils/db.js` using the `postgres` npm package. Two connection pools: `sql` (max 10) for writes, `querySql` (max 6) for reads.
+
+### Server (`src/server/`)
+
+  * `index.ts` — Fastify server with Redis caching (70-min TTL, 10-min warming interval)
+  * `cron.ts` — Delay-based job scheduler (see Cron System above)
+  * Handlers in `src/handlers/` use `wrap()` from `src/utils/wrap.ts` for Lambda/Fastify compatibility
+
+### Utilities (`src/utils/`)
+
+  * `adapter.ts` — adapter runner: `runAdapterToCurrentBlock()`, `runAdapterHistorical()`, `runAllAdaptersToCurrentBlock()`; defines `bridgesToSkip`
+  * `aggregate.ts` — fetches prices from `coins.llama.fi`, computes USD volumes, inserts aggregated rows
+  * `blocks.ts` — `getLatestBlockNumber()`, `getBlockByTimestamp()` (multi-chain: EVM, Solana, Sui, Stellar, Tron, IBC)
+  * `prices.ts` — DefiLlama price API integration
+  * `cache.ts` — Redis wrapper with getLogs tracking per adapter:chain
+  * `constants.ts` — `maxBlocksToQueryByChain` per-chain block query limits (~1.5-2 hours of blocks)
+
+--------------------------------------------------------------------------------
+feat: add WealthVille APY adapter for Solana yield optimizer by amitesh-m · Pull Request #2714 · DefiLlama/yield-server · GitHub (https://github.com/DefiLlama/yield-server/pull/2714)
+citeturn1223search2 [wordlim: 200] Published: 4 months ago; Crawled: last month;   * The earlier failure on "a known protocol slug" was a timing issue — CI ran the day before our TVL adapter (DefiLlama-Adapters#19469) merged, so `wealthville` was not yet in `api.llama.fi/protocols`. ... The existing `wealthville` TVL adapter only summed idle balances (~~$1.7k) and missed the Orca/Raydium CLMM, Meteora DLMM and Jupiter-perp positions that hold most of the NAV. #20222 reads the full on-chain NAV of every vault PDA (~~$11.8k across active vaults, largest vault ~$10.4k), so the protocol's DefiLlama TVL now lines up with the per-vault `tvlUsd` this adapter reports from the same on-chain feed. ... It now resolves the vault's held mints to symbols via `coins.llama.fi`, ordered by position size, and the vault name moves to `poolMeta` where it belongs.
+DefiLlama-Adapters#20222 merged on 2026-07-28 (`c340355`), and it's live on the protocol page. The effect, measured today:
+before the fix now (2026-08-07)
+`wealthville` TVL on DefiLlama $1,832 $11,927
+The methodology string on api.llama.fi/protocol/wealthville now reflects the on-chain valuation (CLMM/DLMM position unwrapping, JitoSOL, perp collateral) rather than just vault-PDA token balances. Our own feed independently reports $11,928 across the same five vaults — so the protocol page and the feed this adapter reads now agree to within a dollar, which wasn't true when you last looked. This PR: CI is green on the current head (`ee3e427` — `test` ✅, `CodeRabbit` ✅) and the branch is `mergeable: clean`. No changes pushed since your review, so nothing new to re-read. On the $10k floor — the honest picture hasn't changed much. Current per-vault TVL:
+vault tvlUsd apyBase
+AI Managed Yield Vault Enhanced $10,506 33.6%
+HIGH APY Vault $1,306 9.8%
+SOL-USDC Orca Whirlpool $108 33.6%
+      adapter ships what would actually be surfaced instead of dust pools
+      that get filtered downstream.
+    - `symbol` was carrying the vault name ("AI Managed Yield Vault
+      Enhanced"), which is not a ticker. It now resolves the vault's held
+      mints to symbols via coins.llama.fi, ordered by position size
+      (JITOSOL-SOL-USDC), and the vault name moves to `poolMeta` where it
+      belongs.
+    
+    `utils.getPrices` is deliberately not used for the symbol lookup: it
+    lowercases the price keys and Solana mints are case-sensitive base58,
+    so the lookup would miss.
+
+### 
+
+amitesh-m commented Aug 7, 2026
+
+Copy link
+
+Copy Markdown
+
+Pushed `54cb2b3` with both changes — the $10k filter you'd asked about, plus a `symbol` fix I should have caught earlier. 1. `tvlUsd >= 10000` filter. The adapter now emits only what you'd actually display. Current output is exactly one pool:
+    
+    {
+      "pool": "AyftocoCqqaPPQXQVePFaGLLYPNyWQWRs6o28JyDboSF-solana",
+      "chain": "Solana",
+      "project": "wealthville",
+      "symbol": "JITOSOL-SOL-USDC",
+      "tvlUsd": 10505.96,
+      "apyBase": 33.63,
+      "poolMeta": "AI Managed Yield Vault Enhanced",
+      "url": "https://wealthville.net/vault/ai-managed-vault"
+    }
+
+2. `symbol` was wrong and you'd have caught it in review. It was carrying the vault name (`"AI Managed Yield Vault Enhanced"`) rather than a ticker. It now resolves the vault's held mints to symbols via `coins.llama.fi`, ordered by position size, and the vault name moves to `poolMeta` where it belongs. (I didn't use `utils.getPrices` for this — it lowercases the price keys, and Solana mints are case-sensitive base58, so the lookup silently misses.)
+
+* * *
+
+One caveat on the filter that's worth your judgment, because it argues against what I just pushed. That vault sits at $10,506 — about 5% over the floor. `test.js:186` does `expect(protocols).toContain(apy[0].project)`, which throws on an empty array. So if SOL dips ~5% and the vault falls under $10k, this adapter emits zero pools and takes your test suite red, rather than just quietly showing nothing. Without the filter that failure mode doesn't exist — the adapter always emits five pools and your display floor hides the small ones, which is the same end result for users. So my honest read is that option 1 (merge without the filter) is the more robust choice, and I've made this PR worse in one specific way by taking option 2. I pushed it because you'd asked about it and I'd rather show you the working version than argue hypothetically. Happy to revert the filter and keep only the `symbol`/`poolMeta` fix — say the word and it's one commit. Either way the `symbol` fix should stay.
+
+[Input][Input]
+
+Sorry, something went wrong.
+
+--------------------------------------------------------------------------------
+claude-trading-skills/skills/defillama-api/references/endpoints.md at main · agiprolabs/claude-trading-skills · GitHub (https://github.com/agiprolabs/claude-trading-skills/blob/main/skills/defillama-api/references/endpoints.md)
+citeturn1223search3 [wordlim: 200] Crawled: 2 days ago; # DeFiLlama API — Endpoints Reference ... Simple number — current TVL in USD. ... ## Coin Prices (`https://coins.llama.fi`)
+
+# DeFiLlama API — Endpoints Reference
+
+All free endpoints require no authentication. Pro endpoints use key in URL path.
+
+## TVL & Protocols (`https://api.llama.fi`)
+
+### GET /protocols
+
+All protocols with current TVL. Returns array of objects with: `name`, `slug`, `tvl`, `chainTvls`, `change_1h`, `change_1d`, `change_7d`, `category`, `chains`, `symbol`, `twitter`, `url`.
+
+### GET /protocol/{slug}
+
+Detailed protocol data with historical TVL arrays, token breakdowns, chain-specific TVL.
+
+### GET /tvl/{slug}
+
+Simple number — current TVL in USD.
+
+### GET /v2/chains
+
+All chains with TVL. Returns: `[{name, tvl, tokenSymbol, chainId, gecko_id}]`
+
+### GET /v2/historicalChainTvl
+
+Historical TVL summed across all chains. Returns: `[{date, tvl}]`
+
+### GET /v2/historicalChainTvl/{chain}
+
+Historical TVL for specific chain. Chain names: `Ethereum`, `Solana`, `Arbitrum`, etc.
+
+## Coin Prices (`https://coins.llama.fi`)
+
+Coin ID format: `{chain}:{address}` — e.g., `solana:So11111111111111111111111111111111111111112`
+
+Supported chains: `ethereum`, `solana`, `bsc`, `polygon`, `arbitrum`, `optimism`, `avalanche`, `base`, `fantom`, `coingecko` (for non-chain lookups).
+--------------------------------------------------------------------------------
+three-ui/data/skills/analysis/defillama-analytics-guide/SKILL.md at main · nirholas/three-ui · GitHub (https://github.com/nirholas/three-ui/blob/main/data/skills/analysis/defillama-analytics-guide/SKILL.md)
+citeturn1223search4 [wordlim: 200] Crawled: yesterday;     GET https://coins.llama.fi/prices/current/coingecko:bitcoin,coingecko:ethereum ... `tvlUsd`  | Pool TVL in USD ...     GET https://stablecoins.llama.fi/stablecoin/{id}
+## Token Prices API
+
+Base URL: `https://coins.llama.fi`
+
+### Current Prices
+    
+    `# By chain:address
+    GET https://coins.llama.fi/prices/current/ethereum:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    
+    # Multiple tokens (comma-separated)
+    GET https://coins.llama.fi/prices/current/ethereum:0xC02aaA39...,arbitrum:0xD74f5255...
+    
+    # By CoinGecko ID
+    GET https://coins.llama.fi/prices/current/coingecko:bitcoin,coingecko:ethereum
+    `
+
+### Historical Prices
+    
+    `# Price at a specific Unix timestamp
+    GET https://coins.llama.fi/prices/historical/{timestamp}/coingecko:bitcoin
+    
+    # First recorded price
+    GET https://coins.llama.fi/prices/first/coingecko:bitcoin
+    `
+
+### Price Charts
+    
+    `# Daily price history
+    GET https://coins.llama.fi/chart/coingecko:bitcoin?start=1672531200&span=30&period=1d
+    `
+
+## Yield / Farming Pools API
+
+Base URL: `https://yields.llama.fi`
+
+The only comprehensive source for DeFi yield data.
+    
+    `# All yield pools
+    GET https://yields.llama.fi/pools
+    
+    # Returns: 10,000+ pools with APY, TVL, IL risk, etc.
+    `
+
+Key response fields per pool:
+
+Field  | Description
+--- | ---
+`pool`  | Unique pool ID
+`chain`  | Chain name
+`project`  | Protocol name
+`symbol`  | Pool token pair
+`tvlUsd`  | Pool TVL in USD
+`apy`  | Total APY (base + reward)
+`apyBase`  | Base APY (trading fees)
+`apyReward`  | Reward token APY
+`ilRisk`  | Impermanent loss risk (yes/no)
+`stablecoin`  | Whether pool is stablecoin-only
+
+### Filtering Yield Pools
+
+The API returns everything — filter client-side:
+
+Find best stablecoin yields on Arbitrum:
+    
+    `GET https://yields.llama.fi/pools
+    
+    Filter: chain === "Arbitrum" && stablecoin === true
+    Sort by: apy (descending)
+    `
+
+Find highest-TVL pools:
+    
+    `Filter: tvlUsd > 1000000
+    Sort by: tvlUsd (descending)
+    `
+
+> Sperax context: USDs offers auto-yield (3–8% APY) without needing to manage farming positions. Compare this against active yield pools on DeFi Llama to show users the effort-adjusted return.
+
+--------------------------------------------------------------------------------
+layer-daemons/susde_sources.md at main · tellor-io/layer-daemons · GitHub (https://github.com/tellor-io/layer-daemons/blob/main/susde_sources.md)
+citeturn1223search5 [wordlim: 200] Crawled: 2 weeks ago; USDC (SagaEVM)  | `0xfc960C233B8E98e0Cf282e29BDE8d3f105fc24d5`  | Main stablecoin on SagaEVM ... DeFiLlama Coins API (`coins.llama.fi`) - Simple, direct USD price with confidence.
+Blockscout API  | `sagaevm.sagaexplorer.io/api/v2/`  | Returns 404 for most endpoints
+DEXScreener  | `api.dexscreener.com`  | Saga chain NOT yet indexed
+GeckoTerminal  | `api.geckoterminal.com`  | Saga chain NOT yet indexed
+
+## Ethereum sUSDE Trading Venues
+
+### Ethena DEX (Primary Source)
+
+sUSDE is primarily traded on Ethena's own DEX.
+
+Pool  | Address  | Chain
+--- | --- | ---
+USDe/sUSDE  | `0x4b5E827F4C0a1042272a11857a355dA1F4Ceebae`  | Ethereum (Curve factory-stable-ng-371)
+sUSDE/WETH  | Various  | Ethereum (Uniswap V3)
+
+Ethena DEX API:
+    
+    `GET https://api.ethena.fi/price/sUSDE
+    `
+
+### DEXScreener
+    
+    `GET https://api.dexscreener.com/latest/dex/tokens/0x9d39A5de30e57443BfF2A8307A4256c8797a3497
+    `
+
+Returns all trading pairs with USD prices, liquidity, and 24h volume.
+
+### DeFiLlama Coins API
+    
+    `GET https://coins.llama.fi/prices/current/ethereum:0x9d39A5de30e57443BfF2A8307A4256c8797a3497
+    `
+
+Returns price in USD directly with confidence score and timestamp.
+
+### On-chain Sources
+
+  * Call `getVirtualPrice()` on Curve pool contracts
+  * Call `balances()` on Curve pools to get reserves and calculate spot price
+  * Call `slot0()` on Uniswap v3 pools for current tick/price
+  * Ethena price feed contracts
+
+## Contract Addresses
+
+Token  | Address  | Notes
+--- | --- | ---
+USDe (Ethereum)  | `0x4c9EDD5852cd905f086C759E8383e09t116831`  | Main USDe contract
+sUSDE (Ethereum)  | `0x9d39A5de30e57443BfF2A8307A4256c8797a3497`  | Main sUSDE contract
+sUSDE (SagaEVM)  | `0xE8EDdAAd31F250099691f93A186859bF39944c5d`  | 1 holder, 0.378 total supply
+USDC (SagaEVM)  | `0xfc960C233B8E98e0Cf282e29BDE8d3f105fc24d5`  | Main stablecoin on SagaEVM
+
+## Recommendation
+
+For Ethereum sUSDE pricing, use this priority order:
+
+  1. Ethena API (`api.ethena.fi/price/sUSDE`) - Official price source.
+  2. DeFiLlama Coins API (`coins.llama.fi`) - Simple, direct USD price with confidence.
+  3. DEXScreener API (`api.dexscreener.com/latest/dex/tokens/ADDRESS`) - All pairs with USD prices.
+  4. On-chain Curve pools - Call `getVirtualPrice()` or `balances()` directly.
+
+For SagaEVM sUSDE pricing:
+
+  * Minimal on-chain liquidity. No reliable DEX pricing available yet.
+  * Consider using Ethereum sUSDE prices as reference until Saga liquidity matures.--------------------------------------------------------------------------------
+BANKONBTCWaaS/dexy/docs/defillama.md at main · cypherpunk4096/BANKONBTCWaaS · GitHub (https://github.com/cypherpunk4096/BANKONBTCWaaS/blob/main/dexy/docs/defillama.md)
+citeturn1223search6 [wordlim: 200] Crawled: 4 days ago;   * DefiLlama exposes two entirely separate API services: the free, keyless public API (`https://api.llama.fi`, plus sibling hosts `coins.llama.fi`, `stablecoins.llama.fi`, `yields.llama.fi`, `bridges.llama.fi`) and the paid Pro API (`https://pro-api.llama.fi/{API_KEY}/...`), which unlocks ~38 additional endpoints (unlocks/emissions, token liquidity, treasuries, hacks, raises, derivatives, bridge detail, ETFs, DAT, RWA, equities) plus higher rate limits. ... Known stablecoin IDs: USDC=`1`, USDT=`2`, PYUSD=`115` (always verify via `/stablecoins`).
+### 2. Coins & Prices (`https://coins.llama.fi`)
+
+Method/Path  | Description
+--- | ---
+`GET /prices/current/{coins}`  | Current prices by `{chain}:{address}` (comma-separated)
+`GET /prices/historical/{timestamp}/{coins}`  | Prices at a UNIX timestamp (`?searchWidth=6h`)
+`GET /batchHistorical?coins={json}`  | Prices for many tokens at many timestamps
+`GET /chart/{coins}`  | Time-series (`?start`/`end`, `span`, `period=24h`, `searchWidth=600`)
+`GET /percentage/{coins}`  | % price change (`?timestamp`, `lookForward`, `period=24h`)
+`GET /prices/first/{coins}`  | Earliest recorded price for coins
+`GET /block/{chain}/{timestamp}`  | Closest block to a timestamp
+
+`/prices/current` response:
+    
+    {"coins":{"ethereum:0xA0b8...eb48":{"decimals":6,"symbol":"USDC","price":1.0,"timestamp":1700000000,"confidence":0.99}}}
+
+The `confidence` field (0–1) reflects price reliability — filter on `>= 0.8` for production. Per DefiLlama's methodology, prices for major tokens are sourced from CoinGecko/CoinMarketCap, while thinly traded tokens are priced from DEX pool data (e.g. --------------------------------------------------------------------------------
+market-intel/skills/market-intel/reference/tools/defillama.md at main · DaizeDong/market-intel · GitHub (https://github.com/DaizeDong/market-intel/blob/main/skills/market-intel/reference/tools/defillama.md)
+citeturn1223search7 [wordlim: 200] Crawled: last month;   * Cost: free, no key (open API `api.llama.fi`); optional Pro at $300/mo for 38 extra endpoints + higher limits [https://api-docs.defillama.com, fetched 2026-06] ... DefiLlama is the DeFi ground-truth dataset the crypto-defi matrix lacked: protocol TVL, yields/APY, stablecoin supply/peg, DEX & perp volume, and fees/revenue, all free and keyless. ...   * `GET coins.llama.fi/prices/current/{chain}:{address}`, price by token contract
+Reach for it when you need normalized, cross-protocol economics rather than a single address or coin quote.
+
+## Install
+
+No install, it is plain REST, no key, no MCP server. Call from a shell or any HTTP client:
+    
+    `curl https://api.llama.fi/protocols
+    `
+
+Endpoints are split across hosts by category: `api.llama.fi` (TVL/fees/volume), `yields.llama.fi` (yields), `stablecoins.llama.fi` (stablecoins), `coins.llama.fi` (price-by-contract). Pro endpoints live under `https://pro-api.llama.fi/{API_KEY}/...`. No Windows-specific quirks (no local process). See L1 line in `reference/volatile/pricing-install.md` → crypto-defi; L0 mechanics in `reference/install-guide.md`.
+
+## Auth / keys
+
+None for the open API, do not send an Authorization header. A key is only needed for the $300/mo Pro tier (richer history, emissions, active-users, locked breakdowns); the key goes in the URL path (`pro-api.llama.fi/{KEY}/...`), so if you ever use Pro, treat that URL as a secret, never paste it into the transcript or commit it; have the user hold it.
+
+## Usage, call examples
+
+Direct REST (no MCP tool names). Minimal example, current TVL of one protocol:
+    
+    `curl https://api.llama.fi/tvl/aave        # -> single number, current USD TVL
+    `
+
+Other workhorses:
+
+  * `GET api.llama.fi/protocols`, all protocols + TVL + 1d/7d change (large, ~5k entries)
+  * `GET api.llama.fi/protocol/{slug}`, full TVL history + chain breakdown for one protocol
+  * `GET yields.llama.fi/pools`, every yield pool (apy, tvlUsd, project, chain)
+  * `GET stablecoins.llama.fi/stablecoins?includePrices=true`, supply + peg per stablecoin
+  * `GET api.llama.fi/overview/fees/{chain}` and `/overview/dexs/{chain}`, fees & DEX volume
+  * `GET coins.llama.fi/prices/current/{chain}:{address}`, price by token contract
+
+## General experience & gotchas (踩坑)
+
+  * No documented hard rate limit on the open API, but it is courtesy-throttled, keep it to a few req/s; bursty loops get soft-blocked (HTTP 429 / connection resets). For repeated pulls, cache locally rather than re-hammering.
+  * Host split is a real trap: yields/stablecoins/coins are separate subdomains, not paths on `api.llama.fi`. Hitting `api.llama.fi/pools` returns 404, use `yields.llama.fi/pools`.
+  * Protocol identifier is the DefiLlama slug, not the CoinGecko id or ticker (e.g. `aave-v3`, `lido`). Look it up from `/protocols` first; guessing the slug 404s.
+  * TVL ≠ market cap and is double-count-prone, bridged/staked assets can be counted across chains; `chainTvls` + the `tvl`/`borrowed`/`staking` sub-keys matter for lending and LST protocols. Read the protocol's `methodology` field before quoting a headline number.
+  * Numbers are point-in-time and revise, DefiLlama backfills/re-labels adapters, so a historical series can shift between pulls. Stamp the fetch date.
+  * `coins.llama.fi` prices are convenience, not authoritative for thin tokens, cross-check against CoinGecko/GeckoTerminal for anything illiquid.
+
+## Failure signals & fallback
+
+  * 404 on a path → wrong host (use the category subdomain) or wrong slug (re-resolve from `/protocols`).
+  * 429 / dropped connection → you are being throttled; back off and cache. Persistent block → route the request through Tavily/Firecrawl fetch or a proxy, or pull the same TVL/price via CoinGecko MCP.
+  * For data DefiLlama doesn't have (live per-coin quotes, on-chain balances/tx, DEX candles) fall back to the named siblings: CoinGecko MCP (prices), Etherscan / Blockscout MCP (on-chain), GeckoTerminal (DEX OHLCV). If you need smart-money labels rather than protocol aggregates, that's Nansen, not DefiLlama.
+
+## Last verified: 2026-06--------------------------------------------------------------------------------
+usdc-explorer/README.md at main · iwbinb/usdc-explorer · GitHub (https://github.com/iwbinb/usdc-explorer/blob/main/README.md)
+citeturn1223search8 [wordlim: 200] Crawled: 2 months ago;   * USDC price — `https://coins.llama.fi/prices/current/coingecko:usd-coin` ... All requests go directly from the browser to public RPC + DefiLlama.
+    ├─ test/                    # Vitest setup + shared providers wrapper
+    └─ styles.css               # Circle-blue light theme (~36 kB)
+    `
+
+### Data sources
+
+  * Circle USDC contract addresses: https://developers.circle.com/stablecoins/usdc-contract-addresses
+  * Arc Testnet network + contracts: https://docs.arc.io/arc/references/connect-to-arc · https://docs.arc.io/arc/references/contract-addresses
+  * EVM public JSON-RPC endpoints — configured per chain in `src/data/chains.ts`
+  * Solana public JSON-RPC — `https://api.mainnet-beta.solana.com` and fallbacks
+  * USDC price — `https://coins.llama.fi/prices/current/coingecko:usd-coin`
+
+### Security & data handling
+
+  * Read-only. The app never asks for a signature, private key, seed phrase, or token approval.
+  * No backend, no API key. All requests go directly from the browser to public RPC + DefiLlama.
+  * Local persistence. Only two keys in `localStorage`: `usdc-explorer-rpc-settings` and `usdc-watchlist`.   * EVM 公共 JSON-RPC：在 `src/data/chains.ts` 中按链配置
+  * Solana 公共 JSON-RPC：`https://api.mainnet-beta.solana.com` 及备选
+  * USDC 价格：`https://coins.llama.fi/prices/current/coingecko:usd-coin`
+
+### 安全与数据
+
+  * 只读。不索要签名、私钥、助记词、token approval。
+  * 无后端、无 API key。所有请求直接从浏览器发往公共 RPC + DefiLlama。
+  * 本地持久化。`localStorage` 只写两把键：`usdc-explorer-rpc-settings`、`usdc-watchlist`，均做了 shape 校验。
+  * 逐链隔离。任一 RPC 失败只降级该链，其余面板照常。
+  * 窗口收敛。Transfer 日志扫描使用自适应窗口（`W, W/2, W/4, …`），不撞公共 RPC 限速。
+
+### Agent 详解
+
+Agent  | 输入  | 输出
+--- | --- | ---
+结算路由 Settlement Router  | 在线链、延迟上限（按风险档）  | 下一笔 Agent flow 应在哪条链结算
+流动性侦察 Liquidity Scout  | 主网供应分布  | 参考流动性场所
+RPC 守护 RPC Guardian  | 慢/陈旧/离线计数  | 是否保留自动 fallback 或改为钉选
+--------------------------------------------------------------------------------
+base-trading-agent/ARCHITECTURE_PLAN.md at master · akaradje/base-trading-agent · GitHub (https://github.com/akaradje/base-trading-agent/blob/master/ARCHITECTURE_PLAN.md)
+citeturn1223search9 [wordlim: 200] Published: 4 months ago; Crawled: last month; DeFiLlama (ฟรี, ไม่ต้องมี API key):    `GET https://coins.llama.fi/chart/coingecko:{id}? ...     def ohlc(coin_id: str, days: int = 14, vs: str = "usd") -> list[dict]:
+--------------------------------------------------------------------------------
+NonFinancialAdviceAgents/defi_alert_check.py at main · dzianisv/NonFinancialAdviceAgents · GitHub (https://github.com/dzianisv/NonFinancialAdviceAgents/blob/main/defi_alert_check.py)
+citeturn1223search10 [wordlim: 200] Crawled: 2 months ago; """DeFiLlama coins API — free, no key, real-time DEX price.""" ... r = requests.get(f"https://coins.llama.fi/prices/current/{key}", timeout=10)
+--------------------------------------------------------------------------------
+aero-vote-radar/README.md at main · araxis33/aero-vote-radar · GitHub (https://github.com/araxis33/aero-vote-radar/blob/main/README.md)
+citeturn1223search11 [wordlim: 200] Crawled: 3 weeks ago; USD pricing for bribe/fee tokens  | DefiLlama `coins.llama.fi` (free, keyless)  | —
+

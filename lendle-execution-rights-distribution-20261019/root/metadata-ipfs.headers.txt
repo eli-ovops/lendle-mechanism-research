@@ -1,0 +1,17 @@
+HTTP/2 429 
+date: Mon, 19 Oct 2026 15:58:59 GMT
+content-type: text/plain; charset=utf-8
+content-length: 175
+access-control-allow-origin: *
+cache-control: public, max-age=900
+link: <https://gatewaychanges.ipfs.io/>; rel="sunset"
+retry-after: 900
+vary: Sec-Fetch-Dest, Sec-Fetch-Mode, Origin
+access-control-expose-headers: Retry-After, Sunset
+sunset: Mon, 21 Sep 2026 00:00:00 GMT
+x-content-type-options: nosniff
+x-robots-tag: noindex, nofollow
+server: cloudflare
+cf-ray: a4d0fcc7b910cffe-KIX
+alt-svc: h3=":443"; ma=86400
+

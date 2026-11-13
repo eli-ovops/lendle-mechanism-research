@@ -1,0 +1,207 @@
+ERC-20 Tokens Transferred:
+19
+All Transfers
+Net Transfers
+From
+0x94d692aF...db482DDF6
+To
+0x5483e926...62dB74718
+For
+0.000319092510549187
+$0.77
+Ether
+(
+WETH
+)
+From
+Null: 0x000...000
+To
+Lendle: Multi Fee Distribution
+For
+27.363794751750285415
+Lendle Proto...
+(
+LEND
+)
+From
+Null: 0x000...000
+To
+Lendle: Multi Fee Distribution
+For
+0.000003539589835509
+ERC-20:
+Lendle Mantl...
+(
+lvWETH
+)
+From
+Null: 0x000...000
+To
+Lendle: Multi Fee Distribution
+For
+4.017274654319826562
+Lendle Proto...
+(
+LEND
+)
+From
+Null: 0x000...000
+To
+0x53B7183c...922E1E6E5
+For
+0.000003539589835508
+ERC-20:
+Lendle Mantl...
+(
+lvWETH
+)
+From
+Null: 0x000...000
+To
+Lendle: Multi Fee Distribution
+For
+14.794455060747259164
+Lendle Proto...
+(
+LEND
+)
+From
+0x29D54f61...7C9df4372
+To
+Null: 0x000...000
+For
+0.000319092510549187
+ERC-20:
+Lendle Mantl...
+(
+variab...
+)
+From
+Null: 0x000...000
+To
+Lendle: Multi Fee Distribution
+For
+0.1585852742330825
+Lendle Proto...
+(
+LEND
+)
+From
+0x29D54f61...7C9df4372
+To
+0x5483e926...62dB74718
+For
+0.000319151867045004
+ERC-20:
+Lendle Mantl...
+(
+lvMETH
+)
+From
+0x5483e926...62dB74718
+To
+0x787Cb0D2...2501bb874
+For
+0.000319092510549187
+$0.77
+Ether
+(
+WETH
+)
+From
+Null: 0x000...000
+To
+Lendle: Multi Fee Distribution
+For
+0.38674206746865555
+Lendle Proto...
+(
+LEND
+)
+From
+Null: 0x000...000
+To
+Lendle: Multi Fee Distribution
+For
+0.000090592655344136
+ERC-20:
+Lendle Mantl...
+(
+lvMETH
+)
+From
+Null: 0x000...000
+To
+Lendle: Multi Fee Distribution
+For
+0.252489276480635507
+Lendle Proto...
+(
+LEND
+)
+From
+Null: 0x000...000
+To
+0x53B7183c...922E1E6E5
+For
+0.000090592655344135
+ERC-20:
+Lendle Mantl...
+(
+lvMETH
+)
+From
+0x0e927Aa5...dBd01D2Ca
+To
+0x5483e926...62dB74718
+For
+0.000319151867045004
+$0.85
+mETH
+(
+mETH
+)
+From
+0x5483e926...62dB74718
+To
+Null: 0x000...000
+For
+0.000319151867045004
+ERC-20:
+Lendle Mantl...
+(
+lvMETH
+)
+From
+0x5483e926...62dB74718
+To
+0x94d692aF...db482DDF6
+For
+0.000290188655176161
+$0.77
+mETH
+(
+mETH
+)
+From
+0x5483e926...62dB74718
+To
+0xF21B5Df5...dcF20e263
+For
+0.000014481605934421
+$0.04
+mETH
+(
+mETH
+)
+From
+0x5483e926...62dB74718
+To
+0x57D8718f...4948d77c2
+For
+0.000014481605934422
+$0.04
+mETH
+(
+mETH
+)

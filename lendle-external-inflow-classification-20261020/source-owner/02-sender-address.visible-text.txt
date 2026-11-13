@@ -1,0 +1,1039 @@
+MEXC 34 | Address: 0x5c30940a...ed2cd7b64 | Mantlescan
+MNT Price:
+$0.53
+(+0.48%)
+Gas:
+50 Gwei
+/
+Light
+Dim
+Dark
+Auto (System)
+Mantle Mainnet
+Mantle Sepolia Testnet
+Sign In
+Home
+Blockchain
+Transactions
+Latest L1→L2 Transactions
+Latest L2→L1 Transactions
+Contract Internal Transactions
+Cross-Chain Transactions
+AA Transactions
+EIP-7702 Authorizations
+Beta
+View Blocks
+Mantle DA Data Storage
+View L1 State Batches
+Top Accounts
+Verified Contracts
+Tokens
+Top Tokens
+(ERC-20)
+Token Transfers
+(ERC-20)
+Token Transfers
+(ERC-8056)
+Token Flow Visualizer
+Beta
+NFTs
+Latest Transfers
+Latest Mints
+Resources
+Charts &  Stats
+Directory
+API
+Multichain API
+API Pricing
+API Documentation
+More
+Developer Tools
+Input Data Encoder
+Beta
+Input Data Decoder
+Unit Converter
+Download Data (CSV Export)
+Account Balance Checker
+Broadcast Transaction
+Bytecode to Opcode
+Smart Contract Tools
+Code Reader
+Verify Contract
+Similar Contract Search
+Contract Diff Checker
+Vyper Online Compiler
+Explore
+Gas Tracker
+Label Cloud
+Domain Name Lookup
+Services
+Token Approvals
+Verified Signature
+Input Data Messages (IDM)
+Advanced Filter
+Explorers
+Mantle Mainnet
+Mantle Sepolia Testnet
+Site Settings
+Appearance
+Light
+Dim
+Dark
+Auto (System)
+|
+Sign In
+Address
+0x5C30940A4544cA845272FE97c4A27F2ED2CD7B64
+This address has been tagged based on
+hildobby
+compilation.
+MEXC 34
+Exchange
+API
+Token Approvals
+Beta
+Check Previous Balance
+Update Name Tag or Label
+Remove Name Tag
+Report/Flag Address
+Overview
+MNT Balance
+1,260,568
+.
+169954439375072561 MNT
+MNT Value
+$670,458.05
+(@ $0.53/MNT)
+Token Holdings
+$339,484.89
+(10 Tokens)
+Could not find any matches!
+ERC-20 Tokens (8)
+COOK (COOK)
+7,967,541.09669168 COOK
+$15,972.61
+@0.002
+Slash Vision...
+(svl)
+104,580,104.474803 svl
+$323,512.28
+@0.0031
+ERC-20: Bitc...
+(BTC)
+0.1 BTC
+$0.00
+ERC-20: Mant...
+(MAPE)
+2,760,000,000 MAPE
+$0.00
+ERC-20: MNТ (MNТ)
+4,850.7 MNТ
+$0.00
+ERC-20: Ukra...
+(UAHM)
+1 UAHM
+$0.00
+ERC-20: When...
+(WHEN)
+2 WHEN
+$0.00
+ERC-20: X (X)
+1 X
+$0.00
+NFT Tokens (2)
+Meow(OMIO) in Mantle
+OMIO
+x10
+ERC-721
+POAP
+The Proof of Attendance Protocol
+ERC-721
+View All Holdings
+More Info
+Private Name Tags
+Add
+Transactions Sent
+Latest:
+1 hr ago
+First:
+3 yrs 92 days ago
+Funded By
+0xF43f6A37...e71495C87
+|
+3 yrs 92 days ago
+Multichain Info
+$1,009,942.94
+(Multichain Portfolio)
+No addresses found
+Transactions
+Internal Transactions
+Token Transfers (ERC-20)
+NFT Transfers
+Other Transactions
+Analytics
+Assets
+Cards
+New
+Advanced Filter
+Latest 25 from a total of
+177,118
+transactions
+Download Page Data
+View Completed Txns
+View Pending Txns
+View Failed Txns
+View Outgoing Txns
+View Incoming Txns
+View Contract Creation
+Transaction Hash
+Method
+Block
+From
+To
+0x71229bc6d59f962621832374f046346861e4d273b01edecf01f86f98073ab108
+Transfer
+Transfer
+102151248
+2026-10-19 18:00:08
+58 mins ago
+1792432808
+MEXC 34
+OUT
+0x5C845632...826496442
+$474.53
+892.19 MNT
+0
+.
+00150306
+50
+.
+0021
+0x84de4d68074a78d93099035f91da4951fb5f15cfa3f44bc9405233b4e8f1e896
+Transfer
+Transfer
+102150375
+2026-10-19 17:31:02
+1 hr ago
+1792431062
+0x5397a496...0C5FbF627
+IN
+MEXC 34
+$2.79
+5.23681511 MNT
+0
+.
+00149526
+50
+.
+0021
+0x6c7b7a1c5ad89e43065c8d19e307498768b567283f6253932331035d3a9c3b7d
+Transfer
+Transfer
+102150148
+2026-10-19 17:23:28
+1 hr ago
+1792430608
+MEXC 34
+OUT
+0x5397a496...0C5FbF627
+$2.66
+5 MNT
+0
+.
+00151671
+50
+.
+0021
+0x9a74caf102d1c9ec8e5a46b482bec7fa85403a246adf2917fce7de6825fdee8e
+Transfer
+Transfer
+102143364
+2026-10-19 13:37:20
+5 hrs ago
+1792417040
+0x39456f07...ECfB6a58A
+IN
+MEXC 34
+$1.35
+2.54749989 MNT
+0
+.
+0014563
+50
+.
+0021
+0x22457a4bd0738c841817b95b60cd3794a9c3818576cc6c3b4e73e042ffb7a8e2
+Transfer
+Transfer
+102140113
+2026-10-19 11:48:58
+7 hrs ago
+1792410538
+0x0865210a...Cf62Add12
+IN
+MEXC 34
+$0.80
+1.5060126 MNT
+0
+.
+00130956
+50
+.
+0021
+0xf02202867a864da1ae6c17fb0b0f89a4a978e4e1a0dd8d29f9fe205249cf7036
+Transfer
+Transfer
+102139487
+2026-10-19 11:28:06
+7 hrs ago
+1792409286
+MEXC 34
+OUT
+0x807F9e47...8eC03a58e
+$497.96
+936.25 MNT
+0
+.
+00131189
+50
+.
+0021
+0x5cdd14a8175d1c1083ed7a8b7ee0c671db2ded348eca7a3405916c16b2d29a2f
+Transfer
+Transfer
+102137962
+2026-10-19 10:37:16
+8 hrs ago
+1792406236
+0xaBFF42E5...369b4e686
+IN
+MEXC 34
+$2.66
+4.99677344 MNT
+0
+.
+00137629
+50
+.
+0021
+0x7c49d5df0f55b5518d08b48567e0210f38bca293a01acbd6ea01d633a9968e6b
+Transfer
+Transfer
+102137777
+2026-10-19 10:31:06
+8 hrs ago
+1792405866
+MEXC 34
+OUT
+0xaBFF42E5...369b4e686
+$2.66
+5 MNT
+0
+.
+00134077
+50
+.
+0021
+0x4348779445bbebdf777e1ab74415ec3c9579779c6a05739c8d55b40dd632490d
+Transfer
+Transfer
+102136367
+2026-10-19 9:44:06
+9 hrs ago
+1792403046
+MEXC 34
+OUT
+0x0B143506...eE545A20E
+$1,303.08
+2,450 MNT
+0
+.
+00131034
+50
+.
+0021
+0xbca47fd4fabce996a7854c7202ca5ca4dd2a136bc6b24882ff613482645ce98d
+Transfer
+Transfer
+102123372
+2026-10-19 2:30:56
+16 hrs ago
+1792377056
+0x9ec8D32e...887AE1370
+IN
+MEXC 34
+$2.60
+4.8956408 MNT
+0
+.
+00131199
+50
+.
+0021
+0x8eeee16365acf885c49db2a5f4b162910c29609a7de8d82bfd2cd0d62728e98c
+Transfer
+Transfer
+102123168
+2026-10-19 2:24:08
+16 hrs ago
+1792376648
+MEXC 34
+OUT
+0x9ec8D32e...887AE1370
+$2.66
+5 MNT
+0
+.
+00130689
+50
+.
+0021
+0x899a9626c387fbf10e4459af3fcbcb54b4898798a7b38c3ad83ffff83bfb1185
+Transfer
+Transfer
+102119238
+2026-10-19 0:13:08
+18 hrs ago
+1792368788
+0x17AC0Ca3...e9526069f
+IN
+MEXC 34
+$672.81
+1,264.99868669 MNT
+0
+.
+00130791
+50
+.
+0021
+0xf748ee01ad4c0021d6dbdc6a485c59f374d95d478fd58a3bbdd8cd6019569eb7
+Transfer
+Transfer
+102107351
+2026-10-18 17:36:54
+25 hrs ago
+1792345014
+0x611322A1...8B3311963
+IN
+MEXC 34
+$582.94
+1,096.02357707 MNT
+0
+.
+00132317
+50
+.
+0021
+0xb3bebb600c79ec605ab7e0fad6605220c9d8c5c0e0785795a43d3e3a59d11026
+Transfer
+Transfer
+102105023
+2026-10-18 16:19:18
+26 hrs ago
+1792340358
+0x0E16916C...B0b483b2d
+IN
+MEXC 34
+$580.87
+1,092.12195382 MNT
+0
+.
+00133775
+50
+.
+0021
+0xb9ab658af9ce8900efda5fc5393e73b57d0831fe0200545d7b2a0fe692985208
+Transfer
+Transfer
+102101807
+2026-10-18 14:32:06
+28 hrs ago
+1792333926
+MEXC 34
+OUT
+0xFa24D316...63bf80D1f
+$677.71
+1,274.2 MNT
+0
+.
+00138031
+50
+.
+0021
+0x9395e3eea46192b50965ccfe62a3f8baef49554867ea04fe1c8dc56b68c0596f
+Transfer
+Transfer
+102096909
+2026-10-18 11:48:50
+31 hrs ago
+1792324130
+0xBE8e6733...82A9d1Dc7
+IN
+MEXC 34
+$2.66
+4.99671571 MNT
+0
+.
+00130845
+50
+.
+0021
+0xdce388b6b271877930666133ec471085cbc1c87ce631d471854eeddbee4b54fd
+Transfer
+Transfer
+102096775
+2026-10-18 11:44:22
+31 hrs ago
+1792323862
+MEXC 34
+OUT
+0xBE8e6733...82A9d1Dc7
+$2.66
+5 MNT
+0
+.
+00131064
+50
+.
+0021
+0x939007a4b443d5b22a889313de8b926e2c2adf464dbaa9d7d2875fc12aba5975
+Transfer
+Transfer
+102094847
+2026-10-18 10:40:06
+32 hrs ago
+1792320006
+MEXC 34
+OUT
+0xEF7fe9F8...31418b2BB
+$1.17
+2.2 MNT
+0
+.
+00131566
+50
+.
+0021
+0xcc16c281760c31a5d1b9f77df4490d166e10472d49280e786e9b0abce4db0ae3
+Transfer
+Transfer
+102089347
+2026-10-18 7:36:46
+35 hrs ago
+1792309006
+0x17AC0Ca3...e9526069f
+IN
+MEXC 34
+$1,997.70
+3,755.99837938 MNT
+0
+.
+0013133
+50
+.
+0021
+0x30a3db09b6bed25f89dd3e54d20bdb5e590f387e7522e74f6bc825c71e4551ca
+Transfer
+Transfer
+102088459
+2026-10-18 7:07:10
+35 hrs ago
+1792307230
+0x636a6B16...ccF8FA995
+IN
+MEXC 34
+$2.60
+4.89564353 MNT
+0
+.
+00130716
+50
+.
+0021
+0xca9f876593a8e40c30e356577aaf3254fce18a6fc540dae65c361c6f583f4704
+Transfer
+Transfer
+102088248
+2026-10-18 7:00:08
+35 hrs ago
+1792306808
+MEXC 34
+OUT
+0x636a6B16...ccF8FA995
+$2.66
+5 MNT
+0
+.
+00131112
+50
+.
+0021
+0x0ec95ea049a148d294d6db0faab580bcad3ec2eebc5e6e3f20138634a67af77e
+Transfer
+Transfer
+102083326
+2026-10-18 4:16:04
+38 hrs ago
+1792296964
+MEXC 34
+OUT
+0xFa24D316...63bf80D1f
+$2,009.72
+3,778.6 MNT
+0
+.
+00130293
+50
+.
+0021
+0x5e8a09a665418ff36d6684cd008da3a7ae941bfa89288c9953b7e10999b9aeaa
+Transfer
+Transfer
+102073216
+2026-10-17 22:39:04
+44 hrs ago
+1792276744
+MEXC 34
+OUT
+0xBfbB1C47...75B277291
+$0.90
+1.7 MNT
+0
+.
+00131928
+50
+.
+0021
+0xc8d1893da5530b00f528aaa39fc36537554feebb06f110785f9194a8d8c96193
+Transfer
+Transfer
+102068747
+2026-10-17 20:10:06
+46 hrs ago
+1792267806
+MEXC 34
+OUT
+0xFb2BC496...40CC2eeb5
+$257.11
+483.4 MNT
+0
+.
+00132191
+50
+.
+0021
+0xf0abed98ba43e0aa653a02fc4d5bf9fc691fb33a9a1f379efb9f1ac6dfa1c19d
+Transfer
+Transfer
+102066312
+2026-10-17 18:48:56
+2 days ago
+1792262936
+0x73fDab6c...113adE10a
+IN
+MEXC 34
+$1,010.55
+1,899.99868484 MNT
+0
+.
+00131697
+50
+.
+0021
+View all transactions
+Latest 1 internal transaction
+Download Page Data
+Advanced mode:
+Parent Transaction Hash
+Block
+From
+To
+0x42a2b6025d1a19aad587cef8a4c556f512c79c67c3858d8fbec78ba456a1d1ab
+76558395
+2025-03-06 7:45:02
+592 days ago
+1741247102
+0x6d0975c6...5Ecf65883
+MEXC 34
+0.00605323 MNT
+$0.00
+Cross Chain Transactions
+Cross-Chain Transactions
+Loading...
+Loading
+Custom
+Read Custom
+Write Custom
+API
+Contract Name
+0 MNT
+Compiler Version
+0
+Optimization Enabled
+0 MNT
+Other Settings
+-NA-
+License
+-NA-
+Custom Contract ABI
+Loading...
+Loading
+Loading...
+Loading
+Loading...
+Loading
+Loading...
+Loading
+Loading...
+Loading
+Loading...
+Loading
+Loading...
+Loading
+Transaction Hash
+Block
+Age
+Implementation
+Event
+Status
+Proxy Contract
+Transaction Hash
+Block
+Age
+Proxy Type
+Block
+Transaction
+Difficulty
+Gas Used
+Reward
+View All Blocks Produced
+Block
+Uncle Number
+Difficulty
+Gas Used
+Reward
+View All Uncles
+Loading...
+Loading
+Loading...
+Loading
+Loading...
+Loading
+Validator Index
+Block
+Amount
+View All Withdrawals
+Transaction Hash
+Block
+Value
+Eth2 PubKey
+Valid
+View All Deposits
+Multichain Portfolio
+Tokens
+NFTs
+0x5C30940A4544cA845272FE97c4A27F2ED2CD7B64
+Net Worth in USD
+$1,009,942.94
+Net Worth in MNT
+1,898,853.95846
+Token Allocations
+MNT
+66.39%
+SVL
+32.03%
+COOK
+1.58%
+Multichain Portfolio
+|
+                                31 Chains
+Display all chains
+•
+Last updated:
+less than 1 sec ago
+Mantle
+(3)
+$1,009,943
+(100%)
+Ethereum
+(0)
+0
+(0%)
+BNB Chain
+(0)
+0
+(0%)
+Polygon
+(0)
+0
+(0%)
+Arbitrum One
+(0)
+0
+(0%)
+Optimism
+(0)
+0
+(0%)
+Base
+(0)
+0
+(0%)
+BTTC
+(0)
+0
+(0%)
+Celo
+(0)
+0
+(0%)
+Linea
+(0)
+0
+(0%)
+Avax C-Chain
+(0)
+0
+(0%)
+Fraxtal
+(0)
+0
+(0%)
+Blast
+(0)
+0
+(0%)
+Taiko
+(0)
+0
+(0%)
+World
+(0)
+0
+(0%)
+XDC
+(0)
+0
+(0%)
+Ape
+(0)
+0
+(0%)
+Unichain
+(0)
+0
+(0%)
+Berachain
+(0)
+0
+(0%)
+MemeCore
+(0)
+0
+(0%)
+Sonic
+(0)
+0
+(0%)
+Abstract
+(0)
+0
+(0%)
+HyperEVM
+(0)
+0
+(0%)
+Katana
+(0)
+0
+(0%)
+Sei
+(0)
+0
+(0%)
+Monad
+(0)
+0
+(0%)
+Plasma
+(0)
+0
+(0%)
+Stable
+(0)
+0
+(0%)
+MegaEth
+(0)
+0
+(0%)
+RobinHood
+(0)
+0
+(0%)
+Arc
+(0)
+0
+(0%)
+Show 30 more chains
+Hide 30 chains
+Tokens
+Chain
+Token
+Portfolio %
+Price
+Amount
+Value
+MANTLE
+Mantle
+(MNT)
+66.39%
+$0.53187
+1,260,568.17
+$670,458.05
+MANTLE
+Slash Vision Labs
+(SVL)
+32.03%
+$0.003093
+104,580,104.4748
+$323,512.28
+MANTLE
+COOK
+(COOK)
+1.58%
+$0.002005
+7,967,541.0967
+$15,972.61
+Loading...
+Loading
+Loading...
+Loading
+Loading...
+Loading
+[ Download:
+CSV Export
+]
+[ Download:
+CSV Export
+]
+A wallet address is a publicly available address that allows its owner to receive funds from another party. To access the funds in an address, you must have its private key. Learn more about addresses in our
+Knowledge Base
+.
+Address QR Code
+My Address - Private Name Tag or Note
+My Name Tag:
+Character limit:
+Private Name Tags (up to 35 characters) can be used for easy identification of addresses
+Private Note:
+Character limit:
+A private note (up to 500 characters) can be attached to this address.
+Please
+DO NOT
+store any passwords or private keys here.
+View all Private Name Tags
+Close
+Save Changes
+👋
+Before You Continue...
+📝
+Connecting your wallet enables signing messages to verify ownership or signing messages to interact with smart contracts.
+⚠️
+This is provided as is, without guarantees or warranties of any kind.
+💸
+All interactions are at your own risk. mantlescan is not responsible for any losses or damages resulting from use of this feature.
+🧠
+Please ensure you understand what you're doing before continuing.
+🔗
+Learn more about
+connecting your wallet on  mantlescan
+.
+Understand and Continue
+Connect a Wallet
+Connecting wallet for read function is optional, useful if you want to call certain functions or simply use your wallet's node.
+Rabby Wallet
+MetaMask
+WalletConnect (Reown)
+Other Wallets
+No wallet found
+Connect a Wallet
+Connecting wallet for read function is optional, useful if you want to call certain functions or simply use your wallet's node.
+Rabby Wallet
+MetaMask
+WalletConnect (Reown)
+Other Wallets
+No wallet found
+Connect a Wallet
+Connecting wallet for read function is optional, useful if you want to call certain functions or simply use your wallet's node.
+Rabby Wallet
+MetaMask
+WalletConnect (Reown)
+Other Wallets
+No wallet found
+Add Custom ABI
+Address
+Custom ABI
+Magic Fill
+Find Similar
+Apply Custom ABI to enable custom read/write functions for the current session. Save to also enable them for future sessions.
+Sign in
+to save this ABI to your account.
+Cancel
+Apply Custom ABI
+×
+Before You Copy
+Don't show this for 30 days
+Understand, Copy Address
+Transaction Private Note
+Transaction Hash
+Private Note Description
+Please
+DO NOT
+store any passwords or private keys here. A private note (up to 100 characters) can be saved and is useful for transaction tracking.
+View All Transactions Private Notes
+Cancel
+Save changes
+My Address - Private Name Tag or Note
+My Name Tag:
+Private Name Tags (up to 35 characters) can be used for easy identification of addresses
+Private Note:
+A private note (up to 500 characters) can be attached to this address. Please DO NOT store any passwords or private keys here.
+View all Private Name Tags
+Close
+Save Changes
+Back to Top
+Powered By Mantle
+Mantlescan is a Block Explorer and Analytics Platform for Mantle Mainnet Network
+Add Mantle Mainnet
+Company
+Brand Assets
+Contact Us
+Terms
+&
+Privacy
+Bug Bounty
+Community
+API Documentation
+Knowledge Base
+Network Status
+What is a Block Explorer?
+Products & Services
+Advertise
+Explorer as a Service (EaaS)
+Multichain API
+Priority Support
+Blockscan
+Mantlescan © 2026  (MANTLE-A1)
+|
+⛏ Built by Team
+Etherscan
+Donations:
+0x71c765...d8976f
+This website
+uses cookies to improve your experience
+. By continuing to use this website, you agree to its
+Terms
+and
+Privacy Policy
+.
+Got it!

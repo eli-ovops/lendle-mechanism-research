@@ -1,0 +1,144 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.etherscan.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Supported Chains
+
+> Every chain the Etherscan API supports, with its chain ID and plan availability.
+
+export const SupportedChains = () => {
+  const [q, setQ] = useState("");
+  const [netF, setNetF] = useState("all");
+  const [tierF, setTierF] = useState("all");
+  const [copied, setCopied] = useState(null);
+  const chains = [["Ethereum Mainnet", 1, "main", true], ["Sepolia Testnet", 11155111, "test", true], ["Hoodi Testnet", 560048, "test", true], ["BNB Smart Chain Mainnet", 56, "main", false], ["BNB Smart Chain Testnet", 97, "test", false], ["Polygon Mainnet", 137, "main", true], ["Polygon Amoy Testnet", 80002, "test", true], ["Base Mainnet", 8453, "main", false], ["Base Sepolia Testnet", 84532, "test", false], ["Arbitrum One Mainnet", 42161, "main", true], ["Arbitrum Sepolia Testnet", 421614, "test", true], ["Linea Mainnet", 59144, "main", true], ["Linea Sepolia Testnet", 59141, "test", true], ["Blast Mainnet", 81457, "main", true], ["Blast Sepolia Testnet", 168587773, "test", true], ["OP Mainnet", 10, "main", false], ["OP Sepolia Testnet", 11155420, "test", false], ["Avalanche C-Chain", 43114, "main", false], ["Avalanche Fuji Testnet", 43113, "test", false], ["BitTorrent Chain Mainnet", 199, "main", true], ["BitTorrent Chain Testnet", 1029, "test", true], ["Celo Mainnet", 42220, "main", true], ["Celo Sepolia Testnet", 11142220, "test", true], ["Fraxtal Mainnet", 252, "main", true], ["Fraxtal Hoodi Testnet", 2523, "test", true], ["Gnosis", 100, "main", false], ["Mantle Mainnet", 5000, "main", true], ["Mantle Sepolia Testnet", 5003, "test", true], ["Memecore Mainnet", 4352, "main", true], ["Memecore Insectarium Testnet", 43522, "test", true], ["Taiko Mainnet", 167000, "main", true], ["Taiko Hoodi", 167013, "test", true], ["XDC Mainnet", 50, "main", true], ["XDC Apothem Testnet", 51, "test", true], ["ApeChain Mainnet", 33139, "main", true], ["ApeChain Curtis Testnet", 33111, "test", true], ["World Mainnet", 480, "main", true], ["World Sepolia Testnet", 4801, "test", true], ["Sonic Mainnet", 146, "main", true], ["Sonic Testnet", 14601, "test", true], ["Unichain Mainnet", 130, "main", true], ["Unichain Sepolia Testnet", 1301, "test", true], ["Abstract Mainnet", 2741, "main", true], ["Abstract Sepolia Testnet", 11124, "test", true], ["Berachain Mainnet", 80094, "main", true], ["Berachain Bepolia Testnet", 80069, "test", true], ["Monad Mainnet", 143, "main", true], ["Monad Testnet", 10143, "test", true], ["HyperEVM Mainnet", 999, "main", true], ["Katana Mainnet", 747474, "main", true], ["Katana Bokuto", 737373, "test", true], ["Sei Mainnet", 1329, "main", true], ["Sei Testnet", 1328, "test", true], ["Stable Mainnet", 988, "main", true], ["Stable Testnet", 2201, "test", true], ["Plasma Mainnet", 9745, "main", true], ["Plasma Testnet", 9746, "test", true], ["MegaETH Mainnet", 4326, "main", true], ["MegaETH Testnet", 6343, "test", true], ["Robinhood Chain Mainnet", 4663, "main", false], ["Arc Mainnet", 5042, "main", false]];
+  const total = chains.length;
+  const freeCount = chains.filter(c => c[3]).length;
+  const paidCount = total - freeCount;
+  const norm = q.trim().toLowerCase();
+  const rows = chains.filter(([name, id, net, free]) => {
+    if (netF === "main" && net !== "main") return false;
+    if (netF === "test" && net !== "test") return false;
+    if (tierF === "free" && !free) return false;
+    if (tierF === "paid" && free) return false;
+    if (norm && !name.toLowerCase().includes(norm) && !String(id).includes(norm)) return false;
+    return true;
+  });
+  const copy = id => {
+    if (navigator.clipboard) navigator.clipboard.writeText(String(id));
+    setCopied(id);
+    setTimeout(() => setCopied(null), 1200);
+  };
+  const lock = <svg width="10" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="11" width="16" height="10" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </svg>;
+  const copyIcon = <svg width="14" height="14" viewBox="0 0 448 512" fill="currentColor">
+      <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z" />
+    </svg>;
+  const checkIcon = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 6 9 17l-5-5" />
+    </svg>;
+  const grid = {
+    display: "grid",
+    gridTemplateColumns: "minmax(0,1fr) 76px 150px 100px 66px",
+    alignItems: "center",
+    columnGap: "0.75rem"
+  };
+  const chipGroup = (label, value, setValue, opts) => <div className="flex items-center gap-1.5">
+      <span style={{
+    fontWeight: 700
+  }} className="text-[11px] uppercase tracking-wide text-zinc-900 dark:text-white mr-0.5">{label}</span>
+      {opts.map(([k, txt]) => <button key={k} onClick={() => setValue(k)} className={"text-xs px-3 py-1.5 rounded-lg border " + (value === k ? "sc-chip-on font-medium" : "border-zinc-950/10 dark:border-white/10 text-zinc-600 dark:text-zinc-300 hover:border-zinc-950/20 dark:hover:border-white/20")}>
+          {txt}
+        </button>)}
+    </div>;
+  return <div className="not-prose">
+      <style>{`
+        .sc-chip-on { background:#0784C3; color:#ffffff; border-color:transparent; }
+        .sc-testnet { color:#0284c7; }
+        .dark .sc-testnet { color:#5cc6ff; }
+      `}</style>
+      <input type="text" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by chain name or chain ID" className="w-full mb-3 px-3 py-2 rounded-lg border border-zinc-950/10 dark:border-white/10 bg-transparent text-sm text-zinc-900 dark:text-white outline-none focus:border-blue-500" />
+
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-3">
+        {chipGroup("Network", netF, setNetF, [["all", "All"], ["main", "Mainnet"], ["test", "Testnet"]])}
+        <span aria-hidden className="hidden sm:block" style={{
+    width: "2px",
+    height: "1.5rem",
+    margin: "0 0.6rem",
+    borderRadius: "2px",
+    background: "currentColor",
+    opacity: 0.32
+  }} />
+        {chipGroup("Tier", tierF, setTierF, [["all", "All"], ["free", "Free Tier Available"], ["paid", "Paid Tier Only"]])}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2 text-[11px] text-zinc-500 dark:text-zinc-400">
+        <span>Showing {rows.length} of {total} chains</span>
+        <span className="text-zinc-300 dark:text-zinc-600">·</span>
+        <span>
+          <span className="font-medium text-green-700 dark:text-green-400">{rows.filter(([, , , f]) => f).length}</span> free tier available
+        </span>
+        <span className="text-zinc-300 dark:text-zinc-600">·</span>
+        <span>
+          <span className="font-medium text-amber-700 dark:text-amber-400">{rows.filter(([, , , f]) => !f).length}</span> paid tier only
+        </span>
+      </div>
+
+      <div style={{
+    overflowX: "auto",
+    WebkitOverflowScrolling: "touch"
+  }}>
+        <div style={{
+    minWidth: "680px"
+  }} className="rounded-xl border border-zinc-950/10 dark:border-white/10 overflow-hidden">
+        <div style={grid} className="px-4 py-2.5 bg-zinc-50 dark:bg-white/[0.04] border-b border-zinc-950/10 dark:border-white/10 text-[10px] font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            <span>Chain name</span>
+            <span>Network</span>
+            <span>Tier</span>
+            <span className="text-right">Chain ID</span>
+            <span />
+          </div>
+
+          {rows.map(([name, id, net, free]) => <div key={id} style={grid} className={"px-4 py-2.5 border-b border-zinc-950/[0.06] dark:border-white/[0.06] transition-colors " + (free ? "hover:bg-zinc-50 dark:hover:bg-white/[0.03]" : "bg-amber-50/70 dark:bg-amber-900/[0.12] hover:bg-amber-100/70 dark:hover:bg-amber-900/20")}>
+              <span title={name} className="text-sm font-medium text-zinc-900 dark:text-white truncate">{name}</span>
+              <span className={"text-xs " + (net === "main" ? "text-zinc-500 dark:text-zinc-400" : "sc-testnet")}>
+                {net === "main" ? "Mainnet" : "Testnet"}
+              </span>
+              <span>
+                {free ? <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                    Free Tier Available
+                  </span> : <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200 whitespace-nowrap">
+                    {lock} Paid Tier Only
+                  </span>}
+              </span>
+              <span className="text-right font-mono text-sm font-medium text-zinc-900 dark:text-white tabular-nums">
+                {id}
+              </span>
+              <button onClick={() => copy(id)} aria-label={"Copy chain ID " + id} title="Copy chain ID" className="justify-self-end p-1.5 rounded-md transition-colors text-zinc-500 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-zinc-950/[0.05] dark:hover:bg-white/[0.08]">
+                {copied === id ? checkIcon : copyIcon}
+              </button>
+            </div>)}
+
+          {rows.length === 0 && <div className="text-sm text-zinc-500 dark:text-zinc-400 px-4 py-8 text-center">
+              No chains match your filters.
+            </div>}
+        </div>
+      </div>
+    </div>;
+};
+
+<Warning>
+  **Effective October 31, 2026**, API support will be deprecated for ApeChain Mainnet (chainid: 33139), ApeChain Curtis Testnet (chainid: 33111), Blast Mainnet (chainid: 81457), and Blast Sepolia Testnet (chainid: 168587773).
+</Warning>
+
+<Tip>
+  Source code and ABI endpoints are available on all chains for every API plan, including the Free Tier.
+</Tip>
+
+<SupportedChains />
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

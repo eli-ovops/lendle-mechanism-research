@@ -1,0 +1,1037 @@
+market-proxy/market-fetcher/README.md at master · status-im/market-proxy · GitHub (https://github.com/status-im/market-proxy/blob/master/market-fetcher/README.md)
+citeturn1221search0 [wordlim: 200] Crawled: last month; ids=bitcoin&vs_currencies=usd&convert_currency=eur"
+--- | --- | ---
+`/simple/price`  | every currency in `coingecko_prices.currencies`  | anything else
+`/coins/markets`  | `coingecko_markets.market_params_normalize.vs_currency`  | anything else
+`/leaderboard/*`  | `coingecko_leaderboard.currency`  | anything else
+
+Per endpoint:
+
+  * leaderboard - `currency` keeps its original meaning (it selects a currency already present in the cache); `convert_currency` is separate and always converts from USD.
+  * `/coins/markets` - money fields (`current_price`, `market_cap`, `fully_diluted_valuation`, `total_volume`, `high_24h`, `low_24h`, `ath`, `atl`, sparkline prices) are scaled by the spot ratio; `price_change_24h` and `market_cap_change_24h` convert each end of the delta with the ratio that applied then; 24h percentages use the honest formula. `price_change_percentage_1h_in_currency` uses the ratio from one hour ago when the in-memory ratio history reaches back that far, and is left unconverted otherwise. `vs_currency` is ignored when converting, because cached rows are always normalized to USD by `market_params_normalize`. `ath_change_percentage`, `atl_change_percentage` and percentages over windows longer than 24h pass through unchanged - honest values would need the exchange rate as it stood on those dates.
+  * `/simple/price` - keys `x`, `x_market_cap`, `x_24h_vol` and `x_24h_change` are added next to the requested `vs_currencies` keys. When the values are computed, a key only appears if its USD source key was requested via the `include_*` flags. Listing the same currency in both `vs_currencies` and `convert_currency` is a duplicate, not an error: it is served once. Either parameter satisfies the currency requirement, so `convert_currency` alone is a complete request.
+
+### GET /api/v1/exchange_rates
+
+Returns the CoinGecko `/api/v3/exchange_rates` body verbatim, refreshed on the interval configured in `coingecko_exchange_rates`. Currency conversion does not depend on this endpoint.
+    
+    {
+      "rates": {
+        "btc": { "name": "Bitcoin", "unit": "BTC", "value": 1.0, "type": "crypto" },
+        "usd": { "name": "US Dollar", "unit": "$", "value": 78126.0, "type": "fiat" }
+      }
+    }
+
+### GET /api/v1/coins/markets
+
+CoinGecko-compatible markets endpoint with pagination and filtering:
+    
+    # Query parameters: ?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false
+    
+    [
+      {
+        "id": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "image": "https://...",
+        "current_price": 50000.00,
+        "market_cap": 1000000000000,
+        "total_volume": 50000000000,
+        "price_change_percentage_24h": 1.5
+      }
+    ]
+
+### GET /api/v1/simple/price
+
+CoinGecko-compatible simple price endpoint:
+    
+    # Query parameters: ?ids=bitcoin,ethereum&vs_currencies=usd,eur&include_market_cap=true
+    
+    {
+      "bitcoin": {
+        "usd": 50000.00,
+        "eur": 42000.00,
+        "usd_market_cap": 1000000000000
+      },
+      "ethereum": {
+        "usd": 3000.00,
+        "eur": 2500.00,
+        "usd_market_cap": 360000000000
+      }
+    }
+
+### GET /api/v1/coins/{coin_id}/market_chart
+
+CoinGecko-compatible market chart endpoint with intelligent caching:
+    
+    # Query parameters: ?days=7&interval=daily
+    
+    {
+      "prices": [
+        [1640995200000, 50000.00],
+        [1641081600000, 51000.00]
+      ],
+      "market_caps": [
+        [1640995200000, 1000000000000],
+        [1641081600000, 1020000000000]
+      ],
+      "total_volumes": [
+        [1640995200000, 50000000000],
+        [1641081600000, 52000000000]
+      ]
+    }
+
+--------------------------------------------------------------------------------
+ahr999-mixin/main.go at main · zed-wong/ahr999-mixin · GitHub (https://github.com/zed-wong/ahr999-mixin/blob/main/main.go)
+citeturn1221search1 [wordlim: 200] Crawled: last month; func CoingeckoMarketChartRange(id, vs_currency, from, to string) string { ... func CoingeckoPrice(id, vs_currencies string) string {
+if err != nil {
+
+log.Println(err)
+
+}
+
+defer length.Close()
+
+var lg string
+
+for length.Next() {
+
+length.Scan(&lg)
+
+}
+
+return lg
+
+}
+
+func statusSubuser(db *sql.DB, UserID string) string {
+
+var returnstring string
+
+statusSubusersql := fmt.Sprintf("SELECT Sub FROM subuser WHERE UserID = '%s'", UserID)
+
+rows, err := db.Query(statusSubusersql)
+
+if err != nil {
+
+log.Println("1", err)
+
+}
+
+defer rows.Close()
+
+var status bool
+
+for rows.Next() {
+
+if err := rows.Scan(&status); err == nil {
+
+if status {
+
+returnstring = "订阅状态: 已订阅"
+
+} else if !status {
+
+returnstring = "订阅状态: 未订阅"
+
+}
+
+} else {
+
+log.Println("err:", err)
+
+}
+
+}
+
+return returnstring
+
+}
+
+//Coingecko
+
+func CoingeckoMarketChartRange(id, vs_currency, from, to string) string {
+
+api := apihost + "/coins/" + id + "/market_chart/range" + "?id=" + id + "&vs_currency=" + vs_currency + "&from=" + from + "&to=" + to
+
+resp, err := http.Get(api)
+
+if err != nil {
+
+log.Println(err)
+
+}
+
+body, err := ioutil.ReadAll(resp.Body)
+
+if err != nil {
+
+log.Println(err)
+
+}
+
+data := string(body)
+
+return data
+
+}
+
+func CoingeckoHistory(id string, date time.Time) string {
+
+t := fmt.Sprintf("%d-%02d-%4d", date.Day()-1, date.Month(), date.Year())
+
+api := apihost + "/coins/" + id + "/history" + "?date=" + t
+
+resp, err := http.Get(api)
+
+if err != nil {
+
+log.Println(err)
+
+}
+
+body, err := ioutil.ReadAll(resp.Body)
+
+if err != nil {
+
+log.Println(err)
+
+}
+
+data := string(body)
+
+return data
+
+}
+
+func CoingeckoPrice(id, vs_currencies string) string {
+
+api := apihost + "/simple/price" + "?ids=" + id + "&vs_currencies=" + vs_currencies
+
+resp, err := http.Get(api)
+
+if err != nil {
+
+log.Println(err)
+
+}
+
+body, err := ioutil.ReadAll(resp.Body)
+
+if err != nil {
+
+log.Println(err)
+
+}
+
+data := string(body)
+
+return data
+
+}
+
+func Mixinrespond(client *mixin.Client, ctx context.Context, msg *mixin.MessageView, category string, data []byte, step int) error {
+
+--------------------------------------------------------------------------------
+GitHub - coingecko/coingecko-typescript · GitHub (https://github.com/coingecko/coingecko-typescript/)
+citeturn1221search2 [wordlim: 200] Crawled: 3 weeks ago;       const price = await client.simple.price.get({ vs_currencies: 'usd', ids: 'bitcoin' }); ...           console.log(err.headers); // {server: 'nginx', ...}
+      environment: 'pro', // 'demo' to initialize the client with Demo API access
+    });
+    
+    async function main() {
+      const price = await client.simple.price.get({ vs_currencies: 'usd', ids: 'bitcoin' });
+      console.log(price);
+    }
+    
+    main()
+
+### Request & Response types
+
+This library includes TypeScript definitions for all request params and response fields. You may import and use them like so:
+    
+    import Coingecko from '@coingecko/coingecko-typescript';
+    
+    const client = new Coingecko({
+      proAPIKey: process.env['COINGECKO_PRO_API_KEY'],
+      // demoAPIKey: process.env['COINGECKO_DEMO_API_KEY'], // Optional, for Demo API access
+      environment: 'pro', // 'demo' to initialize the client with Demo API access
+    });
+    
+    const params: Coingecko.Simple.PriceGetParams = { vs_currencies: 'usd', ids: 'bitcoin' };
+    const price: Coingecko.Simple.PriceGetResponse = await client.simple.price.get(params);
+
+Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
+
+## Handling errors
+
+When the library is unable to connect to the API, or if the API returns a non-success status code (i.e., 4xx or 5xx response), a subclass of `APIError` will be thrown:
+    
+    const price = await client.simple.price
+      .get({ vs_currencies: 'usd', ids: 'bitcoin' })
+      .catch(async (err) => {
+        if (err instanceof Coingecko.APIError) {
+          console.log(err.status); // 400
+          console.log(err.name); // BadRequestError
+          console.log(err.headers); // {server: 'nginx', ...}
+        } else {
+          throw err;
+        }
+      });
+
+Error codes are as follows:
+
+Status Code  | Error Type
+--- | ---
+400  | `BadRequestError`
+401  | `AuthenticationError`
+403  | `PermissionDeniedError`
+404  | `NotFoundError`
+422  | `UnprocessableEntityError`
+429  | `RateLimitError`
+>=500  | `InternalServerError`
+N/A  | `APIConnectionError`
+
+### Retries
+
+Certain errors will be automatically retried 2 times by default, with a short exponential backoff. Connection errors (for example, due to a network connectivity problem), 408 Request Timeout, 409 Conflict, 429 Rate Limit, and >=500 Internal errors will all be retried by default.
+
+You can use the `maxRetries` option to configure or disable this:
+    
+    // Configure the default for all requests:
+    const client = new Coingecko({
+      maxRetries: 0, // default is 2
+    });
+    
+    // Or, configure per-request:
+    await client.simple.price.get({ vs_currencies: 'usd', ids: 'bitcoin' }, {
+      maxRetries: 5,
+    });
+
+### Timeouts
+
+Requests time out after 1 minute by default. You can configure this with a `timeout` option:
+    
+    // Configure the default for all requests:
+    const client = new Coingecko({
+      timeout: 20 * 1000, // 20 seconds (default is 1 minute)
+    });
+    
+    // Override per-request:
+    await client.simple.price.get({ vs_currencies: 'usd', ids: 'bitcoin' }, {
+      timeout: 5 * 1000,
+    });
+
+On timeout, an `APIConnectionTimeoutError` is thrown.
+
+Note that requests which time out will be retried twice by default.
+
+--------------------------------------------------------------------------------
+blockbook/fiat/coingecko.go at master · trezor/blockbook · GitHub (https://github.com/trezor/blockbook/blob/master/fiat/coingecko.go)
+citeturn1221search3 [wordlim: 200] Crawled: last month; // retryAfterFromError extracts the server's Retry-After hint from a coingeckoHTTPError, ... // SimplePrice /simple/price Multiple ID and Currency (ids, vs_currencies)
+func (cg *Coingecko) simpleSupportedVSCurrenciesAt(ctx context.Context, baseURL string, priority reqPriority) (simpleSupportedVSCurrencies, error) {
+
+url := baseURL + "/simple/supported_vs_currencies"
+
+resp, err := cg.makeReq(ctx, url, "supported_vs_currencies", cg.plan, priority)
+
+if err != nil {
+
+return nil, err
+
+}
+
+var data simpleSupportedVSCurrencies
+
+err = json.Unmarshal(resp, &data)
+
+if err != nil {
+
+return nil, err
+
+}
+
+if len(cg.allowedVsCurrencies) == 0 {
+
+return data, nil
+
+}
+
+filtered := make([]string, 0, len(cg.allowedVsCurrencies))
+
+for _, c := range data {
+
+if _, found := cg.allowedVsCurrencies[c]; found {
+
+filtered = append(filtered, c)
+
+}
+
+}
+
+return filtered, nil
+
+}
+
+// SimplePrice /simple/price Multiple ID and Currency (ids, vs_currencies)
+
+func (cg *Coingecko) simplePrice(ctx context.Context, ids []string, vsCurrencies []string) (*map[string]map[string]float32, error) {
+
+params := url.Values{}
+
+idsParam := strings.Join(ids, ",")
+
+vsCurrenciesParam := strings.Join(vsCurrencies, ",")
+
+params.Add("ids", idsParam)
+
+params.Add("vs_currencies", vsCurrenciesParam)
+
+url := fmt.Sprintf("%s/simple/price?%s", cg.tipURL, params.Encode())
+
+// only called from CurrentTickers, therefore always high priority
+
+resp, err := cg.makeReq(ctx, url, "simple/price", cg.plan, priorityHigh)
+
+if err != nil {
+
+return nil, err
+
+}
+
+t := make(map[string]map[string]float32)
+
+err = json.Unmarshal(resp, &t)
+
+if err != nil {
+
+return nil, err
+
+}
+
+return &t, nil
+
+}
+
+// CoinsList /coins/list
+
+func (cg *Coingecko) coinsListAt(ctx context.Context, baseURL string, priority reqPriority) (coinList, error) {
+
+params := url.Values{}
+
+platform := "false"
+
+if cg.platformIdentifier != "" {
+
+platform = "true"
+
+}
+
+params.Add("include_platform", platform)
+
+url := fmt.Sprintf("%s/coins/list?%s", baseURL, params.Encode())
+
+resp, err := cg.makeReq(ctx, url, "coins/list", cg.plan, priority)
+
+if err != nil {
+
+return nil, err
+
+}
+
+var data coinList
+
+err = json.Unmarshal(resp, &data)
+
+if err != nil {
+
+return nil, err
+
+}
+
+return data, nil
+
+return err
+
+}
+
+}
+
+if err := cg.db.WriteBatch(wb); err != nil {
+
+return err
+
+}
+
+}
+
+return nil
+
+}
+
+// UpdateHistoricalTickers gets historical tickers for the main crypto currency
+
+func (cg *Coingecko) UpdateHistoricalTickers() error {
+
+tickersToUpdate := make(map[uint]*common.CurrencyRatesTicker)
+
+allowMax := false
+
+bootstrapInProgress, _, err := historicalBootstrapInProgress(cg.db)
+
+if err != nil {
+
+return err
+
+}
+
+metadataURL := cg.metadataURL()
+
+if bootstrapInProgress {
+
+if !cg.canUseBootstrapMax() {
+
+return coingeckoBootstrapPreconditionError()
+
+}
+
+allowMax = true
+
+}
+
+// reload vs_currencies
+
+vs, err := cg.simpleSupportedVSCurrenciesAt(context.Background(), metadataURL, priorityLow)
+
+if err != nil {
+
+return err
+
+}
+
+cg.cacheMu.Lock()
+
+cg.vsCurrencies = vs
+
+cg.cacheMu.Unlock()
+
+hadFailures := false
+
+var banErr error
+
+for _, currency := range vs {
+
+// get historical rates for each currency
+
+var err error
+
+if _, err = cg.getHistoricalTicker(context.Background(), tickersToUpdate, cg.coin, currency, "", allowMax); err != nil {
+
+hadFailures = true
+
+// report error and continue, Coingecko may return error like "Could not find coin with the given id"
+
+// the rates will be updated next run
+
+glog.Errorf("getHistoricalTicker %s-%s %v", cg.coin, currency, err)
+
+if isCoingeckoCloudflareBanError(err) {
+
+banErr = err
+
+break
+
+}
+
+}
+
+}
+
+if err := cg.storeTickers(tickersToUpdate); err != nil {
+
+return err
+
+}
+
+if banErr != nil {
+
+return banErr
+
+}
+
+if bootstrapInProgress && hadFailures {
+
+return fmt.Errorf("coingecko historical bootstrap incomplete: one or more currency updates failed")
+
+}
+
+return nil
+
+}
+
+// UpdateHistoricalTokenTickers gets historical tickers for the tokens
+
+func (cg *Coingecko) UpdateHistoricalTokenTickers() error {
+
+cg.reqMu.Lock()
+
+View remainder of file in raw view--------------------------------------------------------------------------------
+GitHub - pangz-lab/coingecko-api: Coingecko API Client for PHP · GitHub (https://github.com/pangz-lab/coingecko-api)
+citeturn1221search4 [wordlim: 200] Crawled: last month; > Check API server status ... ◽️ vs_currency of coins, comma-separated if querying more than 1 vs_currencyrefers to `simple/supported_vs_currencies`
+
+◽️ The contract address of tokens, comma separated
+
+  2. ` vs_currencies` ➞ string (required)
+
+◽️ vs_currency of coins, comma-separated if querying more than 1 vs_currency*refers to `simple/supported_vs_currencies`
+
+  3. ` include_market_cap` ➞ string
+
+◽️ true/false to include market_cap, default: false
+
+  4. ` include_24hr_vol` ➞ string
+
+◽️ true/false to include 24hr_vol, default: false
+
+  5. ` include_24hr_change` ➞ string
+
+◽️ true/false to include 24hr_change, default: false
+
+  6. ` include_last_updated_at` ➞ string
+
+◽️ true/false to include last_updated_at of price, default: false
+
+  7. ` precision` ➞ string
+
+◽️ full or any Integer to specify decimal place for currency price value, default: 2
+
+💡 sample usage
+    
+    $result = $apiClient->set()->simple()->tokenPrice('{id}')
+            ->send(
+                $q->withContractAddresses('string')
+                    ->withVsCurrencies('string')
+                    ->withIncludeMarketCap('string')
+                    ->withInclude24hrVol('string')
+                    ->withInclude24hrChange('string')
+                    ->withIncludeLastUpdatedAt('string')
+                    ->withPrecision('string')
+            );
+
+3. 📋 endpoint : `/simple/supported_vs_currencies`
+
+> Get list of supported_vs_currencies.
+
+[ method ] :
+`simple()->supportedVsCurrencies()`
+
+💡 sample usage
+    
+    $result = $apiClient->set()->simple()->supportedVsCurrencies()->send();
+
+--------------------------------------------------------------------------------
+GitHub - SamBuckberry/CoinGeckoR: R functions for interacting with the CoinGecko API · GitHub (https://github.com/SamBuckberry/CoinGeckoR)
+citeturn1221search5 [wordlim: 200] Crawled: 4 months ago;     price(ids = "bitcoin", vs_currencies = "usd") ...     markets(vs_currency = "usd", ids = "bitcoin")
+    
+    price(ids = "bitcoin", vs_currencies = "usd")
+
+  * `/simple/token_price/{id}` Get current price of tokens (using contract addresses) for a given platform in any other currency that you need.
+
+  * `/simple/supported_vs_currencies` Get list of supported_vs_currencies
+    
+    supported_vs_currencies()
+
+* * *
+
+#### Coins
+
+  * `/coins/list` List all supported coins id, name and symbol.
+    
+    coins_list()
+
+  * `/coins/markets` List all supported coins price, market cap, volume, and market related data.
+    
+    markets(vs_currency = "usd", ids = "bitcoin")
+
+  * `/coins/{id}` Get current data (name, price, market, … including exchange tickers) for a coin.
+    
+    coins_data(id = "bitcoin")
+
+  * `/coins/{id}/tickers` Get coin tickers (paginated to 100 items). This function returns a lot of information!
+    
+    coins_tickers(id="bitcoin")
+
+  * `/coins/{id}/market_chart` Get historical market data include price, market cap, and 24h volume (granularity auto).
+    
+    coins_chart(id = "bitcoin", currency = "usd", days = 30)
+
+* * *
+
+#### Categories
+
+  * `/coins/categories/list` List all categories.
+    
+    coin_categories()
+
+  * `/coins/categories/list` List all categories with market data.
+    
+    coin_categories_data()
+
+## Examples
+
+#### Simple
+
+`/simple/price` Get the current price of any cryptocurrencies in any other supported currencies that you need.
+    
+    price(ids = "bitcoin", vs_currencies = "usd")
+
+`/simple/token_price/{id}` Get current price of tokens (using contract addresses) for a given platform in any other currency that you need.
+
+`/simple/supported_vs_currencies` Get list of supported_vs_currencies
+    
+    support_list <- supported_vs_currencies()
+    support_list[1:6]
+    
+    `## [1] "btc" "eth" "ltc" "bch" "bnb" "eos"
+    `
+
+* * *
+
+#### Coins
+
+  * `/coins/list` List all supported coins id, name and symbol.
+    
+    cl <- coins_list()
+    
+    # Make as a data.frame
+    cl <- do.call(rbind, cl)
+    cl[1:3, ]
+    
+    `##      id                              symbol     name                           
+    ## [1,] "01coin"                        "zoc"      "01coin"                       
+    ## [2,] "0-5x-long-algorand-token"      "algohalf" "0.5X Long Algorand Token"     
+    ## [3,] "0-5x-long-altcoin-index-token" "althalf"  "0.5X Long Altcoin Index Token"
+--------------------------------------------------------------------------------
+GitHub - michael-siek/coingecko-api: An open-source TypeScript wrapper for the the CoinGecko API · GitHub (https://github.com/michael-siek/coingecko-api)
+citeturn1221search6 [wordlim: 200] Crawled: 2 months ago;           vs_currencies: 'usd' ...     const results = await coinGeckoApi.coinMarkets({ vs_currency: 'usd' })
+        vs_currencies: 'usd'
+        }
+    })
+    // Multiple contract_addresses
+    const results = await coinGeckoApi.simpleTokenPrice({
+        'binance-smart-chain', {
+        contract_addresses: ['0x00', '0x001'],
+        vs_currencies: 'usd'
+        }
+    })
+
+### `/simple/supported_vs_currencies`
+    
+    const results = await coinGeckoApi.supportedCurrencies()
+
+### `​/coins​/list`
+    
+    const results = await coinGeckoApi.coinList()
+
+### `​/coins​/markets`
+    
+    const results = await coinGeckoApi.coinMarkets({ vs_currency: 'usd' })
+
+### `​/coins​/{id}`
+    
+    const results = await coinGeckoApi.coinMarkets({ id: 'bitcoin' })
+
+### `​/coins​/{id}​/tickers`
+    
+    const results = await coinGeckoApi.coinTickers('bitcoin', {
+      exchange_ids: 'binance'
+    })
+    
+    const { data, request } = await coinGeckoApi.coinTickers('bitcoin', {
+      exchange_ids: 'binance'
+    })
+
+### `​/coins​/{id}​/history`
+    
+    const results = await coinGeckoApi.coinHistory('bitcoin', '30-12-2017', {
+--------------------------------------------------------------------------------
+GitHub - serinko/cgk-cli: Python tools for Coingecko API · GitHub (https://github.com/serinko/cgk-cli)
+citeturn1221search7 [wordlim: 200] Crawled: last month; A simple commandline Python tool - Congecko API based convertor to get an actual market price of any asset ("id") (13000+) against any vs currency (60+), in any given amounty in both ways. ...     $ python3 cgk_conv.py vs_list  Prints a list of vs_currencies (60 items)
+
+`cgk L --vs_list` or `cgk L -v`
+
+What `[id]` symbols can be used?
+
+`cgk L --id_all` or `cgk L -a` (Displays over 13000 items!) `cgk L --id_less` or `cgk L -l` (for a shorter list of id items)
+
+* * *
+
+## cgk_conv.py
+
+An older and simplier version of ckg.py.
+
+A simple commandline Python tool - Congecko API based convertor to get an actual market price of any asset ("id") (13000+) against any vs currency (60+), in any given amounty in both ways.
+
+Prerequisites
+
+There are few Python modules needed. Easy installation with pip.
+
+Module  | Installation
+--- | ---
+sys  | `pip3 install sys`
+requests  | `pip3 install requests`
+tabulate  | `pip3 install tabulate`
+numpy  | `pip3 install numpy`
+
+Usage
+
+Run `python3 cgk_conv.py` and follow the given options.
+    
+    $ python3 cgk_conv.py        
+    
+    COINGECKO CMD CONVERTOR
+    ========================
+    Usage: 
+    python3 cgk_conv.py <id> <vs_currency> <amount>
+    * Example: How much USD is 100 Monero:
+    $ python3 cgk_conv.py monero usd 100
+    Optional argument <switch>:
+    * Switch nominator and denominator.
+    $ python3 cgk_conv.py <id> <vs_currency> <amount> <switch>
+    * Example: How much Monero is 100 USD?, type:
+    $ python3 cgk_conv.py monero usd 100 switch
+    ------------------------
+    Optional Commands:
+    -----------------------------  -----------------------------------------
+    $ python3 cgk_conv.py id_list  Prints all IDs (more than 13000 items!!)
+    $ python3 cgk_conv.py id_less  Prints a short list of IDs
+    $ python3 cgk_conv.py vs_list  Prints a list of vs_currencies (60 items)
+    -----------------------------  -----------------------------------------
+
+## About
+
+Python tools for Coingecko API
+
+### Resources
+
+Readme
+
+GPL-3.0 license
+
+Activity
+
+### Stars
+
+0 stars
+
+### Watchers
+
+1 watching
+
+### Forks
+
+0 forks--------------------------------------------------------------------------------
+GitHub - man-c/pycoingecko: Python wrapper for the CoinGecko API · GitHub (https://github.com/man-c/pycoingecko)
+citeturn1221search8 [wordlim: 200] Crawled: 2 weeks ago;     >>> cg.get_price(ids='bitcoin,litecoin,ethereum', vs_currencies='usd') ... Check API server status ... Get current price of tokens (using contract addresses) for a given platform in any other currency that you need
+    
+    >>> cg.get_price(ids='bitcoin,litecoin,ethereum', vs_currencies='usd,eur')
+    # OR (lists can be used for multiple-valued arguments)
+    >>> cg.get_price(ids=['bitcoin', 'litecoin', 'ethereum'], vs_currencies=['usd', 'eur'])
+    {'bitcoin': {'usd': 3459.39, 'eur': 3019.33}, 'ethereum': {'usd': 106.91, 'eur': 93.31}, 'litecoin': {'usd': 32.72, 'eur': 28.56}}
+    
+    # optional parameters can be passed as defined in the API doc (https://www.coingecko.com/api/docs/v3)
+    >>> cg.get_price(ids='bitcoin', vs_currencies='usd', include_market_cap='true', include_24hr_vol='true', include_24hr_change='true', include_last_updated_at='true')
+    {'bitcoin': {'usd': 3458.74, 'usd_market_cap': 60574330199.29028, 'usd_24h_vol': 4182664683.6247883, 'usd_24h_change': 1.2295378479069035, 'last_updated_at': 1549071865}}
+    # OR (also booleans can be used for boolean type arguments)
+    >>> cg.get_price(ids='bitcoin', vs_currencies='usd', include_market_cap=True, include_24hr_vol=True, include_24hr_change=True, include_last_updated_at=True)
+    {'bitcoin': {'usd': 3458.74, 'usd_market_cap': 60574330199.29028, 'usd_24h_vol': 4182664683.6247883, 'usd_24h_change': 1.2295378479069035, 'last_updated_at': 1549071865}}
+
+--------------------------------------------------------------------------------
+GitHub - GaplyDev01/coingecko-mcp-server: A Node.js Express server that provides a simplified and configurable interface to the CoinGecko cryptocurrency data API · GitHub (https://github.com/GaplyDev01/coingecko-mcp-server)
+citeturn1221search9 [wordlim: 200] Crawled: last month; The server can be configured using environment variables in the `.env` file: ...     * Query params: `ids`, `vs_currencies`, `include_market_cap`, `include_24hr_vol`, `include_24hr_change`, `include_last_updated_at`, `precision` ...     * Query params: `vs_currency`, `ids`, `category`, `order`, `per_page`, `page`, `sparkline`, `price_change_percentage`
+The server can be configured using environment variables in the `.env` file:
+
+Variable  | Description  | Default
+--- | --- | ---
+`PORT`  | The port the server will listen on  | `3000`
+`COINGECKO_API_KEY`  | Your CoinGecko Pro API key  | -
+
+## API Endpoints
+
+The server provides access to all essential CoinGecko API endpoints:
+
+### Basic Endpoints
+
+  * `GET /api/ping` - Check CoinGecko API status
+
+### Price Data
+
+  * `GET /api/simple/price` - Get price data for specified coins
+
+    * Query params: `ids`, `vs_currencies`, `include_market_cap`, `include_24hr_vol`, `include_24hr_change`, `include_last_updated_at`, `precision`
+  * `GET /api/simple/supported_vs_currencies` - Get list of supported vs currencies
+
+### Coin Data
+
+  * `GET /api/coins/markets` - Get market data for coins
+    * Query params: `vs_currency`, `ids`, `category`, `order`, `per_page`, `page`, `sparkline`, `price_change_percentage`
+
+### Market Data
+
+  * `GET /api/global` - Get global cryptocurrency data
+  * `GET /api/search/trending` - Get trending coins
+--------------------------------------------------------------------------------
+pycoingecko/pycoingecko/api.py at master · man-c/pycoingecko · GitHub (https://github.com/man-c/pycoingecko/blob/master/pycoingecko/api.py)
+citeturn1221search10 [wordlim: 200] Crawled: 2 months ago; def get_supported_vs_currencies(self, **kwargs): ... def get_coin_top_gainers_losers(self, vs_currency, **kwargs):
+# api_url = self.__api_url_params(api_url, kwargs)
+
+return self.__request(api_url, kwargs)
+
+@func_args_preprocessing
+
+def get_supported_vs_currencies(self, **kwargs):
+
+"""Get list of supported_vs_currencies"""
+
+api_url = '{0}simple/supported_vs_currencies'.format(self.api_base_url)
+
+# api_url = self.__api_url_params(api_url, kwargs)
+
+return self.__request(api_url, kwargs)
+
+# ---------- COINS ----------#
+
+@func_args_preprocessing
+
+def get_coins(self, **kwargs):
+
+"""List all coins with data (name, price, market, developer, community, etc)"""
+
+api_url = '{0}coins'.format(self.api_base_url)
+
+# ['order', 'per_page', 'page', 'localization']
+
+# api_url = self.__api_url_params(api_url, kwargs)
+
+return self.__request(api_url, kwargs)
+
+@func_args_preprocessing
+
+def get_coin_top_gainers_losers(self, vs_currency, **kwargs):
+
+"""Get top gainers and losers"""
+
+kwargs['vs_currency'] = vs_currency
+
+api_url = '{0}coins/top_gainers_losers'.format(self.api_base_url)
+
+return self.__request(api_url, kwargs)
+
+@func_args_preprocessing
+--------------------------------------------------------------------------------
+GitHub - thanhnguyennguyen/CoinGecko-API: A Node.js wrapper for the CoinGecko API with no dependencies. · GitHub (https://github.com/thanhnguyennguyen/CoinGecko-API)
+citeturn1221search11 [wordlim: 200] Crawled: 4 months ago;   * `params.vs_currencies`: `String|Array` - (Required) vs_currency of coins.
+
+Official documentation: https://www.coingecko.com/api/docs/v3#/events/get_events_countries
+
+Usage Example:
+    
+    let data = await CoinGeckoClient.events.fetchCountries();
+
+* * *
+
+#### `events.fetchTypes()`
+
+Get list of event types.
+
+Official documentation: https://www.coingecko.com/api/docs/v3#/events/get_events_types
+
+Usage Example:
+    
+    let data = await CoinGeckoClient.events.fetchTypes();
+
+* * *
+
+### • Exchange Rates
+
+Calls related to exchange rates.
+
+#### `exchangeRates.all()`
+
+Get BTC-to-Currency exchange rates.
+
+Official documentation: https://www.coingecko.com/api/docs/v3#/exchange_rates/get_exchange_rates
+
+Usage Example:
+    
+    let data = await CoinGeckoClient.exchangeRates.all();
+
+* * *
+
+### • Simple
+
+Calls related to simple endpoints.
+
+#### `simple.price()`
+
+Get the current price of any cryptocurrencies in any other supported currencies that you need.
+
+Official documentation: https://www.coingecko.com/api/docs/v3#/simple/get_simple_price
+
+Params:
+
+  * `params`: `Object` - Parameters to pass through to the request
+  * `params.ids`: `Array|String` - (Required) A single id or a list of coin ids to filter if you want specific results. Use `coins.list()` for a list of coin ids.
+  * `params.vs_currencies`: `Array|String` - [default: `usd`] - A single id or a list of ids. Use `simple.supportedVsCurrencies()` for a list of vsCurrency ids.
+  * `params.include_24hr_vol`: `Boolean` - [default: `false`] - To include 24hr volume.
+  * `params.include_last_updated_at`: `Boolean` - [default: `false`] - To include last_updated_at of price.
+
+Usage Example:
+    
+    let data = await CoinGeckoClient.simple.price({
+        ids: ['bitcoin', 'ethereum'],
+        vs_currencies: ['eur', 'usd'],
+    });
+
+* * *
+
+#### `simple.supportedVsCurrencies()`
+
+Get list of supported vs/comparisons currencies.
+
+Official documentation: https://www.coingecko.com/api/docs/v3#/simple/get_simple_supported_vs_currencies
+
+Usage Example:
+    
+    let data = await CoinGeckoClient.simple.supportedVsCurrencies();
+
+* * *
+
+#### `simple.fetchTokenPrice()`
+
+Get current price of tokens (using contract addresses) for a given platform in any other currency that you need.
+
+Official documentation: https://www.coingecko.com/en/api#operations-simple-get_simple_token_price__id_
+
+Params:
+
+  * `params`: `Object` - Parameters to pass through to the request
+  * `assetPlatform`: `String` - [default: `ethereum`] - (Required) Asset platform (only ethereum is supported at this moment)
+  * `params.contract_addresses`: `String|Array` - (Required) Token’s contract address
+  * `params.vs_currencies`: `String|Array` - (Required) vs_currency of coins. Use `simple.supportedVsCurrencies()` for a list of vsCurrency ids.
+  * `params.include_market_cap`: `Boolean` - [default: `false`] - Include market cap in results or not
+  * `params.include_24hr_vol`: `Boolean` - [default: `false`] - Include 24hr volume in results or not
+  * `params.include_24hr_change`: `Boolean` - [default: `false`] - Include 24hr change in results or not
+  * `params.include_last_updated_at`: `Boolean` - [default: `false`] - Include last updated date in results or not
+
+Usage Example:
+    
+    // 0x contract address (as a test)
+    var zrx = '0xe41d2489571d322189246dafa5ebde1f4699f498';
+    let data = await CoinGeckoClient.simple.fetchTokenPrice({
+      contract_addresses: zrx,
+      vs_currencies: 'usd',
+    });
+
+Thank you Mark Miscavage
+
+

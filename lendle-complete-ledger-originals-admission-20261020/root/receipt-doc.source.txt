@@ -1,0 +1,193 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.etherscan.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# eth_getTransactionReceipt
+
+> Get the receipt of a transaction by hash.
+
+export const chain = '1';
+
+<ResponseExample>
+  ```json Example response theme={null}
+  {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "blockHash": "0x07c17710dbb7514e92341c9f83b4aab700c5dba7c4fb98caadd7926a32e47799",
+      "blockNumber": "0xcf2427",
+      "contractAddress": null,
+      "cumulativeGasUsed": "0xeb67d5",
+      "effectiveGasPrice": "0x1a96b24c26",
+      "from": "0x292f04a44506c2fd49bac032e1ca148c35a478c8",
+      "gasUsed": "0xb41d",
+      "logs": [
+        {
+          "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+          "topics": [
+            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+            "0x000000000000000000000000292f04a44506c2fd49bac032e1ca148c35a478c8",
+            "0x000000000000000000000000ab6960a6511ff18ed8b8c012cb91c7f637947fc0"
+          ],
+          "data": "0x00000000000000000000000000000000000000000000000000000000013f81a6",
+          "blockNumber": "0xcf2427",
+          "transactionHash": "0xadb8aec59e80db99811ac4a0235efa3e45da32928bcff557998552250fa672eb",
+          "transactionIndex": "0x122",
+          "blockHash": "0x07c17710dbb7514e92341c9f83b4aab700c5dba7c4fb98caadd7926a32e47799",
+          "logIndex": "0xdb",
+          "removed": false
+        }
+      ],
+      "logsBloom": "0x0000000000000000000000000000000000000000000000000000000000000400000000000400000000000000000001000000000000000000000000000000000000000000000000000000000800000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000001000000000110000000000000000000000000000000000000000000000000000000200100000000000000000000000000080000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "status": "0x1",
+      "to": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "transactionHash": "0xadb8aec59e80db99811ac4a0235efa3e45da32928bcff557998552250fa672eb",
+      "transactionIndex": "0x122",
+      "type": "0x2"
+    }
+  }
+  ```
+</ResponseExample>
+
+
+## OpenAPI
+
+````yaml openapi/api-reference/endpoint/ethgettransactionreceipt.json GET /v2/api
+openapi: 3.1.0
+info:
+  title: eth_getTransactionReceipt
+  version: 2.0.0
+  description: Get the receipt of a transaction by hash.
+  license:
+    name: Etherscan API Terms
+    url: https://etherscan.io/terms
+servers:
+  - url: https://api.etherscan.io
+    description: Etherscan API.
+security:
+  - apiKey: []
+paths:
+  /v2/api:
+    get:
+      summary: eth_getTransactionReceipt
+      description: Get the receipt of a transaction by hash.
+      operationId: getEthgettransactionreceipt
+      parameters:
+        - name: chainid
+          in: query
+          required: true
+          description: >-
+            Chain ID to query, eg 1 for Ethereum, 42161 for Arbitrum from our
+            [supported chains](/supported-chains).
+          schema:
+            type: string
+          example: '1'
+        - name: module
+          in: query
+          required: true
+          description: Set to proxy for this endpoint.
+          schema:
+            type: string
+            default: proxy
+          example: proxy
+        - name: action
+          in: query
+          required: true
+          description: Set to eth_getTransactionReceipt for this endpoint.
+          schema:
+            type: string
+            default: eth_getTransactionReceipt
+          example: eth_getTransactionReceipt
+        - name: txhash
+          in: query
+          required: true
+          description: The transaction hash to query.
+          schema:
+            type: string
+          example: '0xadb8aec59e80db99811ac4a0235efa3e45da32928bcff557998552250fa672eb'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jsonrpc:
+                    type: string
+                    description: JSON-RPC protocol version.
+                  id:
+                    type: integer
+                    description: Request identifier, echoed back from the request.
+                  result:
+                    type: object
+                    properties:
+                      blockHash:
+                        type: string
+                        description: Hash of the block containing the transaction.
+                      blockNumber:
+                        type: string
+                        description: >-
+                          Block number containing the transaction, in
+                          hexadecimal.
+                      contractAddress:
+                        type: string
+                        description: >-
+                          Address of the contract created, if the transaction
+                          was a contract creation. Otherwise null.
+                      cumulativeGasUsed:
+                        type: string
+                        description: >-
+                          Total gas used in the block up to and including this
+                          transaction, in hexadecimal.
+                      effectiveGasPrice:
+                        type: string
+                        description: Actual gas price paid, in wei (hexadecimal).
+                      from:
+                        type: string
+                        description: Address that sent the transaction.
+                      gasUsed:
+                        type: string
+                        description: Gas used by this transaction, in hexadecimal.
+                      logs:
+                        type: array
+                        description: Log objects generated by the transaction.
+                      logsBloom:
+                        type: string
+                        description: Bloom filter for the logs, as a hex string.
+                      status:
+                        type: string
+                        description: >-
+                          1 if the transaction succeeded, 0 if it failed
+                          (hexadecimal).
+                      to:
+                        type: string
+                        description: >-
+                          Recipient address. null for contract-creation
+                          transactions.
+                      transactionHash:
+                        type: string
+                        description: The transaction hash.
+                      transactionIndex:
+                        type: string
+                        description: >-
+                          Index of the transaction within the block, in
+                          hexadecimal.
+                      type:
+                        type: string
+                        description: Transaction type, in hexadecimal.
+      security:
+        - apiKey: []
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: query
+      name: apikey
+      description: >-
+        Enter your Etherscan API key, or [set one up](/set-up-your-api-key) if
+        you don't have one.
+
+````
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

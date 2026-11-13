@@ -1,0 +1,20 @@
+HTTP/2 200 
+date: Mon, 19 Oct 2026 16:27:16 GMT
+content-type: text/markdown; charset=utf-8
+x-vercel-cache: HIT
+x-vercel-id: kix1::iad1::b7dds-1792427236116-4d2c65d8f6ef
+cf-cache-status: DYNAMIC
+age: 51779
+cache-control: public, max-age=0, must-revalidate
+x-matched-path: /sites/static/[mode]/[siteURL]/[siteData]/llms.txt
+server: cloudflare
+strict-transport-security: max-age=31536000
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, accept-encoding
+content-security-policy: default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' blob: *; img-src * 'self' blob: data:; connect-src *; font-src *; frame-src *; object-src 'none'; base-uri 'self' https://static-2v.gitbook.com; form-action 'self' https://static-2v.gitbook.com *; frame-ancestors https: ;
+referrer-policy: no-referrer-when-downgrade
+x-content-type-options: nosniff
+x-gitbook-route-site: docs.mantle.xyz/network/
+x-gitbook-route-type: static
+x-gitbook-target: 2v
+cf-ray: a4d126316a80fcb7-KIX
+

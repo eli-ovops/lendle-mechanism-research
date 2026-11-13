@@ -1,0 +1,1 @@
+Same exact homepage-linked resource; prior HTTP200 advertised Content-Length4396825 exceeding local4194304B cap before body transfer; no authentication/security refusal; final budgeted GET raises only local size cap to8388608B.

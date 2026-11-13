@@ -1,0 +1,41 @@
+# DefiLlama
+
+## DeFi Llama
+
+- [DefiLlama and our methodology](https://docs.llama.fi/list-your-project/readme.md)
+- [How to list a DeFi project](https://docs.llama.fi/list-your-project/submit-a-project.md)
+- [How to update project metadata](https://docs.llama.fi/list-your-project/how-to-update-project-metadata.md)
+- [How to add a new Blockchain](https://docs.llama.fi/list-your-project/how-to-add-a-new-blockchain.md)
+- [How to write an SDK adapter](https://docs.llama.fi/list-your-project/how-to-write-an-sdk-adapter.md)
+- [Functions we've written so you don't have to](https://docs.llama.fi/list-your-project/functions-weve-written-so-you-dont-have-to.md)
+- [Staking and Pool2](https://docs.llama.fi/list-your-project/functions-weve-written-so-you-dont-have-to/staking-and-pool2.md)
+- [Fork helpers](https://docs.llama.fi/list-your-project/functions-weve-written-so-you-dont-have-to/fork-helpers.md)
+- [General EVM contract calls](https://docs.llama.fi/list-your-project/functions-weve-written-so-you-dont-have-to/general-evm-contract-calls.md)
+- [What to include as TVL?](https://docs.llama.fi/list-your-project/what-to-include-as-tvl.md)
+- [How to update a project](https://docs.llama.fi/list-your-project/how-to-update-a-project.md)
+- [How to write dimensions adapters](https://docs.llama.fi/list-your-project/other-dashboards.md)
+- [Listing your project](https://docs.llama.fi/list-your-project/other-dashboards/listing-your-project.md)
+- [How to build an adapter](https://docs.llama.fi/list-your-project/other-dashboards/how-to-build-an-adapter.md)
+- [Dimensions](https://docs.llama.fi/list-your-project/other-dashboards/dimensions.md)
+- [Important considerations](https://docs.llama.fi/list-your-project/other-dashboards/important-considerations.md)
+- [Helper functions](https://docs.llama.fi/list-your-project/other-dashboards/helper-functions.md)
+- [Testing](https://docs.llama.fi/list-your-project/other-dashboards/testing.md)
+- [Oracles TVS](https://docs.llama.fi/list-your-project/oracles-tvs.md): Our TVS methodology is guided by the principle: "If the oracle malfunctions, would assets be lost?"
+- [Token Rights](https://docs.llama.fi/list-your-project/token-rights.md)
+- [Overview](https://docs.llama.fi/spreadsheet-functions/spreadsheet-functions.md)
+- [Function Reference](https://docs.llama.fi/spreadsheet-functions/function-reference.md)
+- [Templates](https://docs.llama.fi/spreadsheet-functions/templates.md)
+- [Data Definitions](https://docs.llama.fi/analysts/data-definitions.md)
+- [Custom columns](https://docs.llama.fi/analysts/custom-columns.md): Craft Your Own Metrics On-the-Fly
+- [DAT Methodology](https://docs.llama.fi/analysts/dat-methodology.md)
+- [How to change Ethereum's RPC](https://docs.llama.fi/chainlist/how-to-change-ethereums-rpc.md)
+- [Add a new RPC endpoint](https://docs.llama.fi/chainlist/add-a-new-rpc-endpoint.md)
+- [Frequently Asked Questions](https://docs.llama.fi/faqs/frequently-asked-questions.md): Answers to the most Frequently Asked Questions
+- [Overview](https://docs.llama.fi/real-world-assets/real-world-assets.md)
+- [Eligibility & Exclusion](https://docs.llama.fi/real-world-assets/real-world-assets/eligibility-and-exclusion.md)
+- [Methodology & Metrics](https://docs.llama.fi/real-world-assets/real-world-assets/methodology-and-metrics.md)
+- [Definitions & Taxonomy](https://docs.llama.fi/real-world-assets/real-world-assets/definitions-and-taxonomy.md)
+- [RWA Perps](https://docs.llama.fi/real-world-assets/real-world-assets/rwa-perps.md)
+- [Exchanges Methodology](https://docs.llama.fi/exchanges/methodology.md)
+- [How to list an exchange](https://docs.llama.fi/exchanges/list-your-exchange.md)
+- [Pricing](https://docs.llama.fi/pro-api.md): DefiLlama offers Pro and API subscriptions to enhance your DeFi analytics with premium features. Upgrade today to access advanced tools, custom dashboards, LlamaAI, excel/google sheets integrations an

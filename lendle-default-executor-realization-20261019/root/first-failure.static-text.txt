@@ -1,0 +1,304 @@
+Mantle Transaction Hash: 0xdefabd72bc... | Mantlescan
+MNT Price:
+$0.53
+(+0.93%)
+Gas:
+50 Gwei
+/
+Light
+Dim
+Dark
+Auto (System)
+Mantle Mainnet
+Mantle Sepolia Testnet
+Sign In
+Home
+Blockchain
+Transactions
+Latest L1→L2 Transactions
+Latest L2→L1 Transactions
+Contract Internal Transactions
+Cross-Chain Transactions
+AA Transactions
+EIP-7702 Authorizations
+Beta
+View Blocks
+Mantle DA Data Storage
+View L1 State Batches
+Top Accounts
+Verified Contracts
+Tokens
+Top Tokens
+(ERC-20)
+Token Transfers
+(ERC-20)
+Token Transfers
+(ERC-8056)
+Token Flow Visualizer
+Beta
+NFTs
+Latest Transfers
+Latest Mints
+Resources
+Charts &  Stats
+Directory
+API
+Multichain API
+API Pricing
+API Documentation
+More
+Developer Tools
+Input Data Encoder
+Beta
+Input Data Decoder
+Unit Converter
+Download Data (CSV Export)
+Account Balance Checker
+Broadcast Transaction
+Bytecode to Opcode
+Smart Contract Tools
+Code Reader
+Verify Contract
+Similar Contract Search
+Contract Diff Checker
+Vyper Online Compiler
+Explore
+Gas Tracker
+Label Cloud
+Domain Name Lookup
+Services
+Token Approvals
+Verified Signature
+Input Data Messages (IDM)
+Advanced Filter
+Explorers
+Mantle Mainnet
+Mantle Sepolia Testnet
+Site Settings
+Appearance
+Light
+Dim
+Dark
+Auto (System)
+|
+Sign In
+Transaction Details
+Overview
+Internal Txns
+State
+API
+Geth Debug Trace
+Geth Debug Trace_2
+Mantlescan
+Transaction Action
+0x57D8718f...4948d77c2
+failed to execute this transaction
+Transaction Hash:
+0xdefabd72bc8bf5f16db96d9375819cddb296b32d222cf1add0e49d86d31346a7
+Status:
+Fail with error '42'
+Block:
+101320891
+Confirmed by Sequencer
+Timestamp:
+Sep-30-2026 12:41:34 PM +UTC
+19 days ago
+Sep-30-2026 12:41:34 PM +UTC
+Time Formats
+UTC
+Local
+Unix Timestamp
+L1 State Batch Index:
+22304
+L1 State Root Submission Tx Hash:
+0x4a856ba7ae599b66686ef1a959bb3d1331ec056c5a65b5f29dc9432290c37edf
+From:
+0x57D8718f0d24DB1F3F6445337c8A0C24948d77c2
+To:
+0x5483e9260d84b16ac5a32f2CEB333C762dB74718
+Warning! Error encountered during contract execution [
+execution reverted
+]
+Value:
+0 MNT
+($0.00)
+Transaction Fee:
+0
+.
+068621109838654366 MNT
+($0.04)
+Gas Price:
+50
+.
+25 Gwei
+(0
+.
+00000005025 MNT)
+MNT Price:
+$0.70 / MNT
+Gas Limit & Usage by Txn:
+2,500,000
+|
+1,109,316 (44.37%)
+Gas Fees:
+Base:
+50 Gwei
+|
+Max:
+50
+.
+5 Gwei
+|
+Max Priority:
+0
+.
+25 Gwei
+Operator Fee Scalar:
+100,000,000
+Operator Fee Constant:
+0 MNT
+L2 Fees Paid:
+0
+.
+055743129 MNT
+L1 Fees Paid:
+0
+.
+001784820838654366 MNT
+L1 Gas Price:
+0
+.
+000000000823111106 ETH (0
+.
+823111106 Gwei)
+L1 Gas Used by Txn:
+3,280
+L1 Fee Scalar:
+0
+Other Attributes:
+Txn Type:
+2 (EIP-1559)
+Nonce:
+249
+Position In Block:
+1
+Input Data:
+0xa7090f32000000000000000000000000cfa5ae7c2ce8fadc6426c1ff872ca45378fb7cf300000000000000000000000009bc4e0d864854c6afb6eb9a9cdf58ac190d0df900000000000000000000000009bc4e0d864854c6afb6eb9a9cdf58ac190d0df9000000000000000000000000f36afb467d1f05541d998bbbcd5f7167d67bd8fc0000000000000000000000006e868846b2182235c16fd122fcd44739e55a58e40000000000000000000000000000000000000000000000000000000000d69b0e000000000000000000000000000000000000000000000000000000006abd04c900000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016867d00d45347a2ded25b8cdb7022b3171d4ae000000000000000000000000009bc4e0d864854c6afb6eb9a9cdf58ac190d0df900000000000000000000000000000000000000000000000000000000000225e6
+0xa7090f32000000000000000000000000cfa5ae7c2ce8fadc6426c1ff872ca45378fb7cf300000000000000000000000009bc4e0d864854c6afb6eb9a9cdf58ac190d0df900000000000000000000000009bc4e0d864854c6afb6eb9a9cdf58ac190d0df9000000000000000000000000f36afb467d1f05541d998bbbcd5f7167d67bd8fc0000000000000000000000006e868846b2182235c16fd122fcd44739e55a58e40000000000000000000000000000000000000000000000000000000000d69b0e000000000000000000000000000000000000000000000000000000006abd04c900000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016867d00d45347a2ded25b8cdb7022b3171d4ae000000000000000000000000009bc4e0d864854c6afb6eb9a9cdf58ac190d0df900000000000000000000000000000000000000000000000000000000000225e6
+View Input As
+Default View
+UTF-8
+Original
+Image
+Advanced Filter
+Loading...
+Loading
+Switch Back
+View In Decoder
+Export JSON
+More Details:
+Click to show more
+Click to show less
+Private Note:
+To access the
+Private Note
+feature, you must be
+Logged In
+View
+205
+zero value Internal Transactions in
+Advanced
+view mode
+ADVANCED MODE:
+AA Txn Hash
+Method
+Position
+From
+Internal Txns
+Token Txns
+NFT Txns
+Txn Fee (ETH)
+Gas Limit
+Transaction Receipt Event Logs
+:
+:
+:
+:
+:
+:
+:
+:
+:
+:
+:
+Authority
+Delegated Address
+Nonce
+Validity
+yParity
+r
+s
+Loading...
+Loading
+Loading...
+Loading
+A transaction is a cryptographically signed instruction that changes the blockchain state. Block explorers track the details of all transactions in the network. Learn more about transactions in our
+Knowledge Base
+.
+×
+Before You Copy
+Don't show this for 30 days
+Understand, Copy Address
+Transaction Private Note
+Transaction Hash
+Private Note Description
+Please
+DO NOT
+store any passwords or private keys here. A private note (up to 100 characters) can be saved and is useful for transaction tracking.
+View All Transactions Private Notes
+Cancel
+Save changes
+My Address - Private Name Tag or Note
+My Name Tag:
+Private Name Tags (up to 35 characters) can be used for easy identification of addresses
+Private Note:
+A private note (up to 500 characters) can be attached to this address. Please DO NOT store any passwords or private keys here.
+View all Private Name Tags
+Close
+Save Changes
+Back to Top
+Powered By Mantle
+Mantlescan is a Block Explorer and Analytics Platform for Mantle Mainnet Network
+Add Mantle Mainnet
+Company
+Brand Assets
+Contact Us
+Terms
+&
+Privacy
+Bug Bounty
+Community
+API Documentation
+Knowledge Base
+Network Status
+What is a Block Explorer?
+Products & Services
+Advertise
+Explorer as a Service (EaaS)
+Multichain API
+Priority Support
+Blockscan
+Mantlescan © 2026  (MANTLE-A1)
+|
+⛏ Built by Team
+Etherscan
+Donations:
+0x71c765...d8976f
+This website
+uses cookies to improve your experience
+. By continuing to use this website, you agree to its
+Terms
+and
+Privacy Policy
+.
+Got it!
